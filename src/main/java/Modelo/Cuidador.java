@@ -58,5 +58,17 @@ public class Cuidador extends Empleado {
         this.idsAnimales = idsAnimales;
     }
     
+    /**
+     * Regresa el tipo de empleado que es esta clase.
+     * @return tipo de empleado
+     */
+    @Override 
+    public String getTipo(){
+        return "cuidador";
+    }
     
+    @Override
+    public String toString2(){
+        return super.toString2();
+    }
 }

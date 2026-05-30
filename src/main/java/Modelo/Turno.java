@@ -82,5 +82,12 @@ public class Turno {
     public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
     }
-    
+
+    @Override
+    public String toString() {
+        return "id=" + id + 
+                ",\nfecha=" + fecha + 
+                ",\nhoraInicio=" + horaInicio + 
+                ",\nhoraFin=" + horaFin;
+    }
 }

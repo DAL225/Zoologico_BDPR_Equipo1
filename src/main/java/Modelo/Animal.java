@@ -137,6 +137,16 @@ public class Animal {
     public void setTratamientos(List<String> tratamientos) {
         this.tratamientos = tratamientos;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "id=" + id + 
+                ",\nnombreCientifico=" + nombreCientifico + 
+                ",\nespecie=" + especie + 
+                ",\nidHabitat=" + idHabitat + 
+                ",\nnombreComun=" + nombreComun + 
+                ",\nedad=" + edad + 
+                ",\nsexo=" + sexo + 
+                ",\nestadoSalud=" + estadoSalud;
+    }
 }

@@ -13,11 +13,11 @@ import java.util.List;
  * @author amiss
  */
 public class Empleado {
-    private int id;
-    private String nombre;
-    private String usuario;
-    private String password;
-    private List<Turno> turnos;
+    protected int id;
+    protected String nombre;
+    protected String usuario;
+    protected String password;
+    protected List<Turno> turnos;
     
     /**
      * Constructor de recuperacion de la BD, pues se conocen todos los datos en la BD.
@@ -75,6 +75,10 @@ public class Empleado {
         return password;
     }
 
+    public List<Turno> getTurnos() {
+        return turnos;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -89,5 +93,26 @@ public class Empleado {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setTurnos(List<Turno> turnos) {
+        this.turnos = turnos;
+    }
+    
+    /**
+     * Regresa el tipo de empleado que es esta clase.
+     * @return tipo de empleado
+     */
+    public String getTipo(){
+        return "";
+    }
+
+    
+    public String toString2() {
+        return "id=" + id + 
+                ",\nnombre=" + nombre + 
+                ",\nusuario=" + usuario + 
+                ",\npassword=" + password +
+                ",\ntipo=" + getTipo();
     }
 }

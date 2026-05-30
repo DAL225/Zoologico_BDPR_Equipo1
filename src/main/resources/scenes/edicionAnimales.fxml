@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pnlPrincipal" prefHeight="513.0" prefWidth="880.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.EdicionAnimalesController">
+   <children>
+      <Button fx:id="btnCerrar" layoutY="451.0" mnemonicParsing="false" onAction="#cerrar" prefHeight="60.0" prefWidth="880.0" style="-fx-background-color: #FF6347;" text="Cerrar Ventana" textFill="WHITE">
+         <font>
+            <Font name="Candara Bold" size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="lblTitulo" layoutX="348.0" layoutY="14.0" text="Animales">
+         <font>
+            <Font name="Britannic Bold" size="30.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tblAnimales" layoutX="20.0" layoutY="64.0" prefHeight="272.0" prefWidth="838.0" style="-fx-background-radius: 12; -fx-font-size: 14; -fx-background-color: #F8F8FF;">
+         <columns>
+            <TableColumn fx:id="colId" editable="false" prefWidth="44.799991607666016" text="Id" />
+            <TableColumn fx:id="colNombreCientifico" editable="false" prefWidth="138.39999389648438" text="Nombre cientifico" />
+            <TableColumn fx:id="colEspecie" editable="false" prefWidth="98.40003967285156" text="Especie" />
+            <TableColumn fx:id="colIdHabitat" editable="false" prefWidth="98.39999389648438" text="Id habitat" />
+            <TableColumn fx:id="colNombreComun" editable="false" prefWidth="114.4000244140625" text="Nombre comun" />
+            <TableColumn fx:id="colEdad" editable="false" prefWidth="56.800048828125" text="Edad" />
+            <TableColumn fx:id="colSexo" editable="false" prefWidth="55.20001220703125" text="Sexo" />
+            <TableColumn fx:id="colEstadoSalud" editable="false" prefWidth="113.60003662109375" text="Estado de salud" />
+            <TableColumn fx:id="colBotonEliminar" editable="false" prefWidth="113.60003662109375" text="Eliminacion" />
+         </columns>
+      </TableView>
+      <Label fx:id="etIdAnimal" layoutX="210.0" layoutY="365.0" text="Id nuevo animal">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Spinner fx:id="spnIdAnimal" layoutX="375.0" layoutY="365.0" prefHeight="26.0" prefWidth="86.0" />
+      <Button fx:id="btnAgregar" layoutX="548.0" layoutY="363.0" mnemonicParsing="false" onAction="#agregarAnimal" style="-fx-background-color: #48D1CC;" text="Agregar">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

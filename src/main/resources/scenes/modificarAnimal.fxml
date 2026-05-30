@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pnlPrincipal" prefHeight="546.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.ModificarAnimalController">
+   <children>
+      <AnchorPane fx:id="subPnlCamposMod" layoutX="8.0" layoutY="140.0" prefHeight="392.0" prefWidth="662.0">
+         <children>
+            <Label fx:id="etNombreCientifico" layoutX="11.0" layoutY="16.0" text="Nombre cientifico">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etEspecie" layoutX="91.0" layoutY="63.0" text="Especie">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etClima" layoutX="79.0" layoutY="122.0" text="Id habitat">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etNombreComun" layoutX="22.0" layoutY="174.0" text="Nombre comun">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtNombreCientifico" layoutX="190.0" layoutY="16.0" promptText="ej. Elephantidae">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <Button fx:id="btnModificarDatos" layoutX="234.0" layoutY="342.0" mnemonicParsing="false" onAction="#modificarDatos" style="-fx-background-color: red;" text="Modificar datos" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <ChoiceBox fx:id="chkEspecie" layoutX="190.0" layoutY="64.0" prefHeight="30.0" prefWidth="191.0" style="-fx-background-color: #EEE8AA;" />
+            <TextField fx:id="txtNombreComun" layoutX="189.0" layoutY="174.0" promptText="ej. Bajo">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <Spinner fx:id="spnIdHabitat" layoutX="191.0" layoutY="122.0" prefHeight="26.0" prefWidth="86.0" />
+            <Label fx:id="etObligatorio" layoutX="84.0" layoutY="37.0" text="*Obligatorio" textFill="RED" />
+            <Label fx:id="etObligatorio2" layoutX="84.0" layoutY="85.0" text="*Obligatorio" textFill="RED" />
+            <Label fx:id="etSexo" layoutX="101.0" layoutY="232.0" text="Sexo">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="chkSexo" layoutX="190.0" layoutY="230.0" prefHeight="30.0" prefWidth="191.0" style="-fx-background-color: #EEE8AA;" />
+            <Label fx:id="etEstadoSalud" layoutX="21.0" layoutY="292.0" text="Estado de salud">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtEstadoSalud" layoutX="190.0" layoutY="290.0" promptText="ej. Bajo">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <Label fx:id="etObligatorio3" layoutX="84.0" layoutY="140.0" text="*Obligatorio" textFill="RED" />
+            <Label fx:id="etRecomendaciones" layoutX="399.0" layoutY="65.0" text="Recomendaciones de cuidado">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etTratamientos" layoutX="411.0" layoutY="174.0" text="Tratamientos veterinarios">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnRecomendaciones" layoutX="415.0" layoutY="103.0" mnemonicParsing="false" onAction="#modificarRecomendaciones" text="Modificar recomendaciones +/-">
+               <font>
+                  <Font name="Berlin Sans FB" size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnTratamientos" layoutX="422.0" layoutY="204.0" mnemonicParsing="false" onAction="#modificarTratamientos" text="Modificar tratamientos +/-">
+               <font>
+                  <Font name="Berlin Sans FB" size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Label fx:id="lblTitulo" layoutX="128.0" layoutY="45.0" text="Modificacion Datos en Animales">
+         <font>
+            <Font name="Britannic Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="etIdAnimal" layoutX="181.0" layoutY="94.0" text="Id">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Spinner fx:id="spnIdAnimal" layoutX="282.0" layoutY="95.0" prefHeight="26.0" prefWidth="86.0" />
+      <Button fx:id="btnBuscar" layoutX="455.0" layoutY="93.0" mnemonicParsing="false" onAction="#buscarAnimal" style="-fx-background-color: #48D1CC;" text="Buscar">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

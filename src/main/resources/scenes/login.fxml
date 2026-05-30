@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="342.0" style="-fx-border-color: #006400; -fx-border-width: 12; -fx-background-color: #FFFAF0;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.LoginController">
+   <children>
+      <ImageView fx:id="imgZoo" fitHeight="105.0" fitWidth="125.0" layoutX="113.0" layoutY="12.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/images/zoo.jpg" />
+         </image>
+      </ImageView>
+      <TextField fx:id="txtUsuario" layoutX="60.0" layoutY="135.0" prefHeight="50.0" prefWidth="222.0" promptText="Usuario" style="-fx-background-color: transparent; -fx-padding: 5 0 5 0; -fx-border-width: 0 0 2 0; -fx-border-color: transparent transparent #000000 transparent;">
+         <font>
+            <Font name="Berlin Sans FB" size="25.0" />
+         </font>
+      </TextField>
+      <PasswordField fx:id="txtPassword" layoutX="60.0" layoutY="207.0" prefHeight="52.0" prefWidth="222.0" promptText="Password" style="-fx-background-color: transparent; -fx-border-color: transparent transparent #000000 transparent; -fx-border-width: 0 0 2 0; -fx-padding: 5 0 5 0;">
+         <font>
+            <Font name="Berlin Sans FB" size="20.0" />
+         </font>
+      </PasswordField>
+      <Button fx:id="btnLogin" layoutX="97.0" layoutY="296.0" mnemonicParsing="false" onAction="#iniciarSesion" prefHeight="36.0" prefWidth="148.0" style="-fx-background-color: #90EE90; -fx-background-radius: 12;" text="Login">
+         <font>
+            <Font name="Arial" size="20.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

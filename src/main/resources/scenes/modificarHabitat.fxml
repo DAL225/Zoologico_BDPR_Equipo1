@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pnlPrincipal" prefHeight="546.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.ModificarHabitatController">
+   <children>
+      <Label fx:id="lblTitulo" layoutX="156.0" layoutY="41.0" text="Modificacion Datos en Habitats">
+         <font>
+            <Font name="Britannic Bold" size="30.0" />
+         </font>
+      </Label>
+      <StackPane fx:id="stckPane" layoutX="49.0" layoutY="299.0" prefHeight="150.0" prefWidth="200.0" />
+      <AnchorPane fx:id="subPnlCamposMod" layoutX="49.0" layoutY="143.0" prefHeight="395.0" prefWidth="487.0">
+         <children>
+            <Label fx:id="etNombre" layoutX="79.0" layoutY="7.0" text="Nombre">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etTipo" layoutX="105.0" layoutY="52.0" text="Tipo">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etClima" layoutX="98.0" layoutY="112.0" text="Clima">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etNivel" layoutX="17.0" layoutY="163.0" text="Nivel de limpieza">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtNombre" layoutX="185.0" layoutY="5.0" promptText="ej. La Tundra">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="txtClima" layoutX="184.0" layoutY="110.0" promptText="ej. Frio">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <Button fx:id="btnModificarDatos" layoutX="234.0" layoutY="344.0" mnemonicParsing="false" onAction="#modificarDatos" style="-fx-background-color: red;" text="Modificar datos" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <ChoiceBox fx:id="chkTipo" layoutX="185.0" layoutY="53.0" prefHeight="30.0" prefWidth="191.0" style="-fx-background-color: #EEE8AA;" />
+            <Label fx:id="etCapacidad" layoutX="17.0" layoutY="218.0" text="Capacidad maxima de animales">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Spinner fx:id="spnCapacidad" layoutX="288.0" layoutY="219.0" prefHeight="26.0" prefWidth="86.0" />
+            <Label fx:id="etObligatorio" layoutX="79.0" layoutY="26.0" text="*Obligatorio" textFill="RED" />
+            <Label fx:id="etObligatorio2" layoutX="79.0" layoutY="74.0" text="*Obligatorio" textFill="RED" />
+            <ChoiceBox fx:id="chkNivelLimpieza" layoutX="185.0" layoutY="161.0" prefHeight="30.0" prefWidth="191.0" style="-fx-background-color: #EEE8AA;" />
+         </children>
+      </AnchorPane>
+      <Label fx:id="etIdHabitat" layoutX="168.0" layoutY="91.0" text="Id">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Spinner fx:id="spnIdHabitat" layoutX="269.0" layoutY="92.0" prefHeight="26.0" prefWidth="86.0" />
+      <Button fx:id="btnBuscar" layoutX="442.0" layoutY="90.0" mnemonicParsing="false" onAction="#buscarHabitat" style="-fx-background-color: #48D1CC;" text="Buscar">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

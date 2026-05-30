@@ -72,5 +72,17 @@ public class Veterinario extends Empleado{
         this.especialidades = especialidades;
     }
     
+    /**
+     * Regresa el tipo de empleado que es esta clase.
+     * @return tipo de empleado
+     */
+    @Override 
+    public String getTipo(){
+        return "veterinario";
+    }
     
+    @Override
+    public String toString2(){
+        return super.toString2();
+    }
 }

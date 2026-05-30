@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pnlPrincipal" prefHeight="430.0" prefWidth="639.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.EdicionEspecialidadesController">
+   <children>
+      <Button fx:id="btnCerrar" layoutX="-5.0" layoutY="368.0" mnemonicParsing="false" onAction="#cerrar" prefHeight="60.0" prefWidth="645.0" style="-fx-background-color: #FF6347;" text="Cerrar Ventana" textFill="WHITE">
+         <font>
+            <Font name="Candara Bold" size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="lblTitulo" layoutX="141.0" layoutY="14.0" text="Especialidades veterinarias">
+         <font>
+            <Font name="Britannic Bold" size="30.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tblEspecialidades" layoutX="34.0" layoutY="64.0" prefHeight="228.0" prefWidth="558.0" style="-fx-background-radius: 12; -fx-font-size: 14; -fx-background-color: #F8F8FF;">
+         <columns>
+            <TableColumn fx:id="colEspecialidad" editable="false" prefWidth="424.0000228881836" text="Especialidad" />
+            <TableColumn fx:id="colBotonEliminar" editable="false" prefWidth="133.60000610351562" text="Eliminacion" />
+         </columns>
+      </TableView>
+      <Label fx:id="etNuevaEspecialidad" layoutX="42.0" layoutY="306.0" text="Nueva especialidad">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnAgregar" layoutX="521.0" layoutY="304.0" mnemonicParsing="false" onAction="#agregarEspecialidad" style="-fx-background-color: #48D1CC;" text="Agregar">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+      <TextField fx:id="txtNuevaEspecialidad" layoutX="231.0" layoutY="306.0" prefHeight="27.0" prefWidth="274.0" promptText="ej. Anestesiologia">
+         <font>
+            <Font name="Bodoni MT" size="14.0" />
+         </font>
+      </TextField>
+   </children>
+</AnchorPane>

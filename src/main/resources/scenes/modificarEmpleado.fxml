@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pnlPrincipal" prefHeight="546.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.ModificarEmpleadoController">
+   <children>
+      <AnchorPane fx:id="subPnlCamposMod" layoutX="22.0" layoutY="136.0" prefHeight="395.0" prefWidth="544.0">
+         <children>
+            <Label fx:id="etNombre" layoutX="14.0" layoutY="11.0" text="Nombre completo">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etUsuario" layoutX="99.0" layoutY="56.0" text="Usuario">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etPassword" layoutX="84.0" layoutY="102.0" text="Password">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="etTurnos" layoutX="33.0" layoutY="153.0" text="Turnos laborales">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtNombre" layoutX="200.0" layoutY="9.0" promptText="ej. Raul Perez Perez">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="txtUsuario" layoutX="200.0" layoutY="54.0" promptText="ej. RaulPePe">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="txtPassword" layoutX="200.0" layoutY="100.0" promptText="ej. RalXPT12">
+               <font>
+                  <Font name="Berlin Sans FB" size="16.0" />
+               </font>
+            </TextField>
+            <Button fx:id="btnTurnos" layoutX="200.0" layoutY="154.0" mnemonicParsing="false" onAction="#modificarTurnos" text="Modificar turnos +/-">
+               <font>
+                  <Font name="Berlin Sans FB" size="15.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnModificarDatos" layoutX="275.0" layoutY="324.0" mnemonicParsing="false" onAction="#modificarDatos" style="-fx-background-color: red;" text="Modificar datos" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
+            <StackPane fx:id="stckPane" layoutX="33.0" layoutY="197.0" prefHeight="118.0" prefWidth="378.0">
+               <children>
+                  <AnchorPane fx:id="subPnlVeterinario" prefHeight="99.0" prefWidth="590.0" style="-fx-background-color: #F5F5DC;">
+                     <children>
+                        <Label fx:id="etAnimalesVeterinario" layoutY="22.0" text="Animales Asignados">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="btnAnimalesVeterinario" layoutX="186.0" layoutY="22.0" mnemonicParsing="false" onAction="#modificarAnimales" text="Modificar animales +/-">
+                           <font>
+                              <Font name="Berlin Sans FB" size="15.0" />
+                           </font>
+                        </Button>
+                        <Label fx:id="etEspecialidades" layoutY="70.0" text="Especialidades">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="btnEspecialidades" layoutX="186.0" layoutY="70.0" mnemonicParsing="false" onAction="#modificarEspecialidades" text="Modificar especialidades +/-">
+                           <font>
+                              <Font name="Berlin Sans FB" size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="subPnlCuidador" prefHeight="99.0" prefWidth="590.0" style="-fx-background-color: #F5F5DC;">
+                     <children>
+                        <Label fx:id="etAnimalesCuidador" layoutY="22.0" text="Animales Asignados">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="btnAnimalesCuidador" layoutX="186.0" layoutY="22.0" mnemonicParsing="false" onAction="#modificarAnimales" text="Modificar animales +/-">
+                           <font>
+                              <Font name="Berlin Sans FB" size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="subPnlIntendente" prefHeight="116.0" prefWidth="378.0" style="-fx-background-color: #F5F5DC;">
+                     <children>
+                        <Label fx:id="etHabitats" layoutY="22.0" text="Habitats Asignados">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="btnHabitats" layoutX="186.0" layoutY="22.0" mnemonicParsing="false" onAction="#modificarHabitats" text="Modificar habitats +/-">
+                           <font>
+                              <Font name="Berlin Sans FB" size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
+            <Label fx:id="etObligatorio3" layoutX="246.0" layoutY="355.0" text="*Todos los campos son obligatorios" textFill="RED" />
+         </children>
+      </AnchorPane>
+      <Label fx:id="lblTitulo" layoutX="116.0" layoutY="42.0" text="Modificacion Datos en Empleados">
+         <font>
+            <Font name="Britannic Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="etIdEmpleado" layoutX="160.0" layoutY="83.0" text="Id">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Spinner fx:id="spnIdEmpleado" layoutX="261.0" layoutY="84.0" prefHeight="26.0" prefWidth="86.0" />
+      <Button fx:id="btnBuscar" layoutX="434.0" layoutY="82.0" mnemonicParsing="false" onAction="#buscarEmpleado" style="-fx-background-color: #48D1CC;" text="Buscar">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

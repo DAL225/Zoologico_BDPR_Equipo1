@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pnlPrincipal" prefHeight="430.0" prefWidth="639.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.EdicionTurnosController">
+   <children>
+      <Button fx:id="btnCerrar" layoutX="-5.0" layoutY="368.0" mnemonicParsing="false" onAction="#cerrar" prefHeight="60.0" prefWidth="645.0" style="-fx-background-color: #FF6347;" text="Cerrar Ventana" textFill="WHITE">
+         <font>
+            <Font name="Candara Bold" size="18.0" />
+         </font>
+      </Button>
+      <Label fx:id="lblTitulo" layoutX="266.0" layoutY="14.0" text="Turnos">
+         <font>
+            <Font name="Britannic Bold" size="30.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tblTurnos" layoutX="34.0" layoutY="64.0" prefHeight="208.0" prefWidth="558.0" style="-fx-background-radius: 12; -fx-font-size: 14; -fx-background-color: #F8F8FF;">
+         <columns>
+            <TableColumn fx:id="colId" editable="false" prefWidth="76.00000381469727" text="Id" />
+            <TableColumn fx:id="colFecha" editable="false" prefWidth="129.60002899169922" text="Fecha" />
+            <TableColumn fx:id="colHoraInicio" editable="false" prefWidth="108.800048828125" text="Hora inicio" />
+            <TableColumn fx:id="colHoraFin" editable="false" prefWidth="124.7999267578125" text="Hora fin" />
+            <TableColumn fx:id="colBotonEliminar" editable="false" prefWidth="124.7999267578125" text="Eliminacion" />
+         </columns>
+      </TableView>
+      <Label fx:id="etIdTurno" layoutX="109.0" layoutY="296.0" text="Id nuevo turno">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Spinner fx:id="spnIdTurno" layoutX="248.0" layoutY="296.0" prefHeight="26.0" prefWidth="86.0" />
+      <Button fx:id="btnAgregar" layoutX="421.0" layoutY="294.0" mnemonicParsing="false" onAction="#agregarTurno" style="-fx-background-color: #48D1CC;" text="Agregar">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>
