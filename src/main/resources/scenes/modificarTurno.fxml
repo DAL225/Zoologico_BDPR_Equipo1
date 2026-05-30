@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pnlPrincipal" prefHeight="546.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.ModificarTurnoController">
+<AnchorPane fx:id="pnlPrincipal" prefHeight="506.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.ModificarTurnoController">
    <children>
-      <Label fx:id="lblTitulo" layoutX="138.0" layoutY="37.0" text="Modificacion Datos en Turnos">
+      <Label fx:id="lblTitulo" layoutX="138.0" layoutY="9.0" text="Modificacion Datos en Turnos">
          <font>
             <Font name="Britannic Bold" size="30.0" />
          </font>
@@ -59,7 +59,7 @@
             <AnchorPane fx:id="subPnlIntendente" prefHeight="99.0" prefWidth="590.0" style="-fx-background-color: #F5F5DC;" />
          </children>
       </StackPane>
-      <AnchorPane fx:id="subPnlCamposMod" layoutX="105.0" layoutY="154.0" prefHeight="368.0" prefWidth="428.0">
+      <AnchorPane fx:id="subPnlCamposMod" layoutX="105.0" layoutY="126.0" prefHeight="368.0" prefWidth="428.0">
          <children>
             <Label fx:id="etFecha" layoutX="31.0" layoutY="10.0" text="Fecha">
                <font>
@@ -81,13 +81,13 @@
             <DatePicker fx:id="chkFecha" layoutX="121.0" layoutY="11.0" />
          </children>
       </AnchorPane>
-      <Label fx:id="etIdTurno" layoutX="148.0" layoutY="86.0" text="Id">
+      <Label fx:id="etIdTurno" layoutX="148.0" layoutY="58.0" text="Id">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Spinner fx:id="spnIdTurno" layoutX="249.0" layoutY="87.0" prefHeight="26.0" prefWidth="86.0" />
-      <Button fx:id="btnBuscar" layoutX="422.0" layoutY="85.0" mnemonicParsing="false" onAction="#buscarTurno" style="-fx-background-color: #48D1CC;" text="Buscar">
+      <Spinner fx:id="spnIdTurno" layoutX="249.0" layoutY="59.0" prefHeight="26.0" prefWidth="86.0" />
+      <Button fx:id="btnBuscar" layoutX="422.0" layoutY="57.0" mnemonicParsing="false" onAction="#buscarTurno" style="-fx-background-color: #48D1CC;" text="Buscar">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

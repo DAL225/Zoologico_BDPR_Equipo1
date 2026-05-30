@@ -1,9 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -17,10 +14,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- *
  * @author amiss
  */
-public class adminController {
+public class AdminControllerFijo {
 
     @FXML
     private ChoiceBox<String> opcionesMenu;
@@ -31,7 +27,7 @@ public class adminController {
     private String seccionActiva = "";
 
     @FXML
-    public void initialize(URL url, ResourceBundle rb) {
+    private void initialize() { // Simplificado para JavaFX moderno
         // Escuchamos cuando el usuario seleccione algo en el ChoiceBox
         opcionesMenu.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -39,25 +35,28 @@ public class adminController {
             }
         });
     }
+    
+    @FXML
+    public void cerrarSesion() throws IOException {
+        App.setRoot("login");
+    }
 
     /**
-     * Clic en el boton Empleados, cambia los valores del choice Box
+     * Clic en el botón Empleados, cambia los valores del choice Box
      */
     @FXML
     private void clicEmpleados() {
         seccionActiva = "Empleados";
-        // Cargamos las opciones específicas en el ChoiceBox
         opcionesMenu.setItems(FXCollections.observableArrayList(
                 "Registrar Empleado",
                 "Modificar Empleado",
                 "Eliminar Empleado",
                 "Consultar Lista Empleados"
         ));
-        opcionesMenu.getSelectionModel().clearSelection();
     }
 
     /**
-     * Clic en el boton Turnos, cambia los valores del choice Box
+     * Clic en el botón Turnos, cambia los valores del choice Box
      */
     @FXML
     private void clicTurnos() {
@@ -68,11 +67,10 @@ public class adminController {
                 "Eliminar Turno",
                 "Consultar Lista Turnos"
         ));
-        opcionesMenu.getSelectionModel().clearSelection();
     }
 
     /**
-     * Clic en el boton Habitats, cambia los valores del choice Box
+     * Clic en el botón Habitats, cambia los valores del choice Box
      */
     @FXML
     private void clicHabitats() {
@@ -83,11 +81,10 @@ public class adminController {
                 "Eliminar Habitat",
                 "Consultar Lista Habitats"
         ));
-        opcionesMenu.getSelectionModel().clearSelection();
     }
 
     /**
-     * Clic en el boton Animales, cambia los valores del choice Box
+     * Clic en el botón Animales, cambia los valores del choice Box
      */
     @FXML
     private void clicAnimales() {
@@ -98,31 +95,27 @@ public class adminController {
                 "Eliminar Animal",
                 "Consultar Lista Animales"
         ));
-        opcionesMenu.getSelectionModel().clearSelection();
     }
 
     /**
-     * Cambia la vista del subPnl, segun la opcion del choiceBox.
-     *
-     * @param opcionSeleccionada opcion del ChoiceBox
+     * Cambia la vista del subPnl, según la opción del choiceBox.
      */
     private void cambiarVistaContenedor(String opcionSeleccionada) {
-        String archivoFXML = "";
+        String archivoFXML = this.fxmlCorrespondiente(opcionSeleccionada);
 
-        archivoFXML = this.fxmlCorrespondiente(opcionSeleccionada);
-
-        if (!archivoFXML.isBlank() || !archivoFXML.isEmpty()) {
+        // CORRECCIÓN: Si está vacío, entónces SÍ salimos del método para evitar errores.
+        if (archivoFXML == null || archivoFXML.isBlank()) {
             return;
         }
 
-        //Abre una nueva ventana para las listas de elementos
+        // Abre una nueva ventana para las listas de elementos
         if (archivoFXML.equals("listaEmpleados.fxml")
                 || archivoFXML.equals("listaTurnos.fxml")
                 || archivoFXML.equals("listaHabitats.fxml")
                 || archivoFXML.equals("listaAnimales.fxml")) {
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/com/mycompany/zoologico_bdpr_equipo1/scenes/" + archivoFXML)
+                        getClass().getResource("/scenes/" + archivoFXML)
                 );
 
                 Parent root = loader.load();
@@ -132,22 +125,22 @@ public class adminController {
                 stage.setScene(new Scene(root));
                 stage.show();
 
-                System.out.println("Mostrando" + archivoFXML);
+                System.out.println("Mostrando " + archivoFXML);
 
             } catch (Exception e) {
                 e.printStackTrace();
                 mostrarAlerta("Error", "No se pudo cargar la vista de la tabla", Alert.AlertType.ERROR);
             }
 
-        } //Cambia el subPanel por la vista del formulario segun la opcion seleccionada
+        } // Cambia el subPanel por la vista del formulario según la opción seleccionada
         else {
             try {
-                // Usamos la misma lógica de rutas que corregimos antes
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/zoologico_bdpr_equipo1/scenes/" + archivoFXML));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/" + archivoFXML));
                 Parent nuevaVista = loader.load();
 
                 // Limpiamos el panel crema y metemos la nueva interfaz
                 subPnl.getChildren().setAll(nuevaVista);
+                subPnl.setVisible(true);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -157,51 +150,47 @@ public class adminController {
     }
 
     /**
-     * Regresa el nombre del fxml que corresponda segun la opcion del
-     * parametro(del choiceBox).
-     *
-     * @param opcionSeleccionada Opcion del ChoiceBox
-     * @return nombre del fxml correspondiente
+     * Regresa el nombre del fxml que corresponda según la opción del choiceBox.
      */
     private String fxmlCorrespondiente(String opcionSeleccionada) {
-        // Evaluamos qué interfaz cargar mapeando la selección
         switch (opcionSeleccionada) {
-            case "Registrar Empleado":
+            case "Registrar Empleado": 
                 return "registrarEmpleado.fxml";
-            case "Modificar Empleado":
+            case "Modificar Empleado": 
                 return "modificarEmpleado.fxml";
-            case "Eliminar Empleado":
+            case "Eliminar Empleado": 
                 return "eliminarEmpleado.fxml";
-            case "Consultar Lista Empleados":
+            case "Consultar Lista Empleados": 
                 return "listaEmpleados.fxml";
-            case "Registrar Turno":
+            case "Registrar Turno": 
                 return "registrarTurno.fxml";
-            case "Modificar Turno":
+            case "Modificar Turno": 
                 return "modificarTurno.fxml";
-            case "Eliminar Turno":
+            case "Eliminar Turno": 
                 return "eliminarTurno.fxml";
-            case "Consultar Lista Turnos":
+            case "Consultar Lista Turnos": 
                 return "listaTurnos.fxml";
-            case "Registrar Habitat":
+            case "Registrar Habitat": 
                 return "registrarHabitat.fxml";
-            case "Modificar Habitat":
+            case "Modificar Habitat": 
                 return "modificarHabitat.fxml";
-            case "Eliminar Habitat":
+            case "Eliminar Habitat": 
                 return "eliminarHabitat.fxml";
-            case "Consultar Lista Habitats":
+            case "Consultar Lista Habitats": 
                 return "listaHabitats.fxml";
-            case "Registrar Animal":
+            case "Registrar Animal": 
                 return "registrarAnimal.fxml";
-            case "Modificar Animal":
+            case "Modificar Animal": 
                 return "modificarAnimal.fxml";
-            case "Eliminar Animal":
+            case "Eliminar Animal": 
                 return "eliminarAnimal.fxml";
-            case "Consultar Lista Animales":
+            case "Consultar Lista Animales": 
                 return "listaAnimales.fxml";
+            default: return "";
         }
-        return "";
     }
 
+    
     /**
      * Muestra una alerta con el título, mensaje y tipo especificados.
      *

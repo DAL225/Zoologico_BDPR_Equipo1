@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pnlPrincipal" prefHeight="546.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.EliminarAnimalController">
+<AnchorPane fx:id="pnlPrincipal" prefHeight="506.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.EliminarAnimalController">
    <children>
       <AnchorPane fx:id="subPnlCamposElim" layoutX="8.0" layoutY="140.0" prefHeight="310.0" prefWidth="662.0">
          <children>
