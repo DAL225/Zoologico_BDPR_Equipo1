@@ -107,7 +107,7 @@ public class CuidadorController {
         try {
             // Cargar la vista del login
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("login.fxml"));
+                    getClass().getResource("/scenes/login.fxml"));
             Parent root = loader.load();
 
             // Crear nueva ventana
