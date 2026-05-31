@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -22,6 +23,9 @@ public class AdminControllerFijo {
     private ChoiceBox<String> opcionesMenu;
     @FXML
     private AnchorPane subPnl;
+    
+    @FXML
+    private Button btnCerrarSesion;
 
     // Esta variable nos ayudará a saber qué botón lateral está activo
     private String seccionActiva = "";
@@ -36,9 +40,30 @@ public class AdminControllerFijo {
         });
     }
     
+    /**
+     * Cierra sesión y regresa al login.
+     */
     @FXML
-    public void cerrarSesion() throws IOException {
-        App.setRoot("login");
+    private void cerrarSesion() {
+        try {
+            // Cargar la vista del login
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("login.fxml"));
+            Parent root = loader.load();
+
+            // Crear nueva ventana
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Iniciar Sesión");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+
+            // Cerrar ventana actual
+            Stage stageActual = (Stage) btnCerrarSesion.getScene().getWindow();
+            stageActual.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

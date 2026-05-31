@@ -78,7 +78,7 @@ public class Veterinario extends Empleado{
      */
     @Override 
     public String getTipo(){
-        return "veterinario";
+        return "Veterinario";
     }
     
     @Override

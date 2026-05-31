@@ -56,4 +56,29 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
         //aqui algo de orden descending en _id asi creo obtener el max y sumar 1
         return 0;
     }
+    
+    @Override
+    public boolean modificarDatos(Animal animalAux) throws Exception{
+        //update cada dato
+        return true;
+    }
+    
+     @Override
+    public boolean eliminarAnimal(int idAnimal) throws Exception{
+        //delete
+        //tambien debe buscar en todos los cuidadores y veterinarios quin tenga ese id y borrarlo.
+        return true;
+    }
+    
+    @Override
+    public boolean modificarRecomendaciones(int idAnimal, List<String> recomendaciones) throws Exception{
+        
+        return true;
+    }
+    
+    @Override
+    public boolean modificarTratamientos(int idAnimal, List<String> tratamientos) throws Exception{
+        
+        return true;
+    }
 }

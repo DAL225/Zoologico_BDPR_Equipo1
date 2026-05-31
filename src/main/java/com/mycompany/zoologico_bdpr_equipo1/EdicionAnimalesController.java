@@ -73,7 +73,7 @@ public class EdicionAnimalesController implements Initializable {
     /**
      * Permite asignar la lista de la cual cargara los datos de animales
      * public porque se accede desde la ventana padre del empleado a modificar o agregar
-     * @param listaAnimales lista de la cual se cargaran datos en la tabla
+     * @param listaIdAnimales lista de la cual se cargaran datos en la tabla
      */
     public void setListaIdAnimales(List<Integer> listaIdAnimales) {
         this.listaIdAnimales = listaIdAnimales;

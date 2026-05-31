@@ -65,7 +65,7 @@ public class EdicionTurnosController implements Initializable {
      */
     public void setListaTurnos(ObservableList<Turno> listaTurnos) {
         this.listaTurnos = listaTurnos;
-        tblTurnos.setItems(this.listaTurnos);
+        cargarDatos();
     }
 
     @Override

@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="pnlPrincipal" prefHeight="506.0" prefWidth="678.0" style="-fx-background-color: #F5F5DC; -fx-border-color: #8FBC8F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.zoologico_bdpr_equipo1.ModificarTurnoController">
@@ -16,49 +15,6 @@
             <Font name="Britannic Bold" size="30.0" />
          </font>
       </Label>
-      <StackPane fx:id="stckPane" layoutX="49.0" layoutY="299.0" prefHeight="150.0" prefWidth="200.0">
-         <children>
-            <AnchorPane fx:id="subPnlVeterinario" prefHeight="99.0" prefWidth="590.0" style="-fx-background-color: #F5F5DC;">
-               <children>
-                  <Label fx:id="etAnimalesVeterinario" layoutY="22.0" text="Animales Asignados">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="btnAnimalesVeterinario" layoutX="186.0" layoutY="22.0" mnemonicParsing="false" onAction="#agregarAnimales" text="Agregar animal +">
-                     <font>
-                        <Font name="Berlin Sans FB" size="15.0" />
-                     </font>
-                  </Button>
-                  <Label fx:id="etEspecialidades" layoutY="70.0" text="Especialidades">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="btnEspecialidades" layoutX="186.0" layoutY="70.0" mnemonicParsing="false" onAction="#agregarEspecialidades" text="Agregar especialidad +">
-                     <font>
-                        <Font name="Berlin Sans FB" size="15.0" />
-                     </font>
-                  </Button>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="subPnlCuidador" prefHeight="99.0" prefWidth="590.0" style="-fx-background-color: #F5F5DC;">
-               <children>
-                  <Label fx:id="etAnimalesCuidador" layoutY="22.0" text="Animales Asignados">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button fx:id="btnAnimalesCuidador" layoutX="186.0" layoutY="22.0" mnemonicParsing="false" onAction="#agregarAnimales" text="Agregar animal +">
-                     <font>
-                        <Font name="Berlin Sans FB" size="15.0" />
-                     </font>
-                  </Button>
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="subPnlIntendente" prefHeight="99.0" prefWidth="590.0" style="-fx-background-color: #F5F5DC;" />
-         </children>
-      </StackPane>
       <AnchorPane fx:id="subPnlCamposMod" layoutX="105.0" layoutY="126.0" prefHeight="368.0" prefWidth="428.0">
          <children>
             <Label fx:id="etFecha" layoutX="31.0" layoutY="10.0" text="Fecha">

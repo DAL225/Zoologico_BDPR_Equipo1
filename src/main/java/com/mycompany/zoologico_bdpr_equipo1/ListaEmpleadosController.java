@@ -11,6 +11,7 @@ import Modelo.Dao.EmpleadoDAO;
 import Modelo.Empleado;
 import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.EmpleadoDAOImpl;
+import Modelo.Intendente;
 import Modelo.Veterinario;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -148,28 +149,14 @@ public class ListaEmpleadosController implements Initializable {
 
                         // Obtener controller
                         ListaAnimalesController controller = loader.getController();
-                        animalDao = new AnimalDAOImpl();
 
-                        ObservableList<Animal> listaAnimalesAux = FXCollections.observableArrayList();
-//                        if (empleado instanceof Cuidador cuidador) {
-//                            //Por cada idAlmacenado buscara el animal y lo guardara,
-//                            //para luego con los datos mostrarlos en la interfaz/tabla
-//                            for(int id : cuidador.getIdsAnimales()){
-//                                Animal animalAux = animalDao.obtenerAnimal(id);
-//                                listaAnimalesAux.add(animalAux);
-//                            }
-//                            controller.setListaAnimales(listaAnimalesAux);
-//
-//                        } else if (empleado instanceof Veterinario veterinario) {
-//                            //Por cada idAlmacenado buscara el animal y lo guardara,
-//                            //para luego con los datos mostrarlos en la interfaz/tabla
-//                            for(int id : veterinario.getIdsAnimales()){
-//                                Animal animalAux = animalDao.obtenerAnimal(id);
-//                                listaAnimalesAux.add(animalAux);
-//                            }
-//                            controller.setListaAnimales(listaAnimalesAux);
-//
-//                        }
+                        if (empleado instanceof Cuidador) {
+                            Cuidador cuidador = (Cuidador) empleado;
+                            controller.setListaIdAnimales(cuidador.getIdsAnimales());
+                        } else if (empleado instanceof Veterinario) {
+                            Veterinario veterinario = (Veterinario) empleado;
+                            controller.setListaIdAnimales(veterinario.getIdsAnimales());
+                        }
 
                         Stage stage = new Stage();
                         stage.setScene(new Scene(vista));
@@ -212,14 +199,28 @@ public class ListaEmpleadosController implements Initializable {
             {
                 btn.setOnAction(event -> {
 
-                    Empleado empleado =
-                            getTableView().getItems().get(getIndex());
+                    Empleado empleado = getTableView().getItems().get(getIndex());
 
-                    System.out.println(
-                            "Especialidades de "
-                            + empleado.getNombre());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("listaEspecialidades.fxml"));
+                        Parent vista = loader.load();
 
-                    // Abrir ListaEspecialidades
+                        // Obtener controller
+                        ListaEspecialidadesController controller = loader.getController();
+
+                        if (empleado instanceof Veterinario) {
+                            Veterinario veterinario = (Veterinario) empleado;
+                            controller.setListaEspecialidades(FXCollections.observableArrayList(veterinario.getEspecialidades()));
+                        }
+
+                        Stage stage = new Stage();
+                        stage.setScene(new Scene(vista));
+                        stage.show();
+
+                        System.out.println("Especialidades de " + empleado.getUsuario());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
             }
 
@@ -253,14 +254,29 @@ public class ListaEmpleadosController implements Initializable {
             {
                 btn.setOnAction(event -> {
 
-                    Empleado empleado =
-                            getTableView().getItems().get(getIndex());
+                    Empleado empleado = getTableView().getItems().get(getIndex());
 
-                    System.out.println(
-                            "Hábitats de "
-                            + empleado.getNombre());
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("listaHabitats.fxml"));
+                        Parent vista = loader.load();
 
-                    // Abrir ListaHabitats
+                        // Obtener controller
+                        ListaHabitatsController controller = loader.getController();
+                        animalDao = new AnimalDAOImpl();
+
+                        if (empleado instanceof Intendente) {
+                            Intendente intendente = (Intendente) empleado;
+                            controller.setListaHabitats(intendente.getIdsHabitats());
+                        }
+
+                        Stage stage = new Stage();
+                        stage.setScene(new Scene(vista));
+                        stage.show();
+
+                        System.out.println("Habitats asignados a " + empleado.getUsuario());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 });
             }
 
@@ -286,23 +302,23 @@ public class ListaEmpleadosController implements Initializable {
     }
 
     /**
-     * Cargar datos a la tabla
+     * Carga de datos a la tabla.
      */
     private void cargarDatos() {
         ObservableList<Empleado> lista = FXCollections.observableArrayList();
-
-        try {
-//            empleadoDao = new EmpleadoDAOImpl();
-//
-//            lista = FXCollections.observableArrayList(empleadoDao.obtenerEmpleados());
-//
-//            if (lista == null || lista.isEmpty()) {
-//                mostrarAlerta("Vacio", "No hay empleados para mostrar ", Alert.AlertType.INFORMATION);
-//                return;
-//            }
+        
+        try{
+            empleadoDao = new EmpleadoDAOImpl();
+            
+            lista.addAll(empleadoDao.obtenerTodosEmpleados());
+            
+            if (lista == null || lista.isEmpty()){
+                mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+                return;
+            }
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
-        }
+        mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
+    }
         
         tblEmpleados.setItems(lista);
     }

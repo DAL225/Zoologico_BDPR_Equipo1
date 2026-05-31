@@ -20,4 +20,12 @@ public interface AnimalDAO {
     List<Animal> obtenerTodosAnimales() throws Exception;
     
     Integer obtenerIdDisponible() throws Exception;
+    
+    boolean modificarDatos(Animal animalAux) throws Exception;
+    
+    boolean eliminarAnimal(int idAnimal) throws Exception;
+    
+    boolean modificarRecomendaciones(int idAnimal, List<String> recomendaciones) throws Exception;
+    
+    boolean modificarTratamientos(int idAnimal, List<String> tratamientos) throws Exception;
 }

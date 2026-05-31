@@ -4,10 +4,23 @@
  */
 package Modelo.Dao;
 
+import Modelo.Empleado;
+import java.util.List;
+
 /**
  *
  * @author amiss
  */
 public interface EmpleadoDAO {
+    
+    List<Empleado> obtenerTodosEmpleados() throws Exception;
+    
+    boolean eliminarEmpleado(int idEmpleado) throws Exception;
+    
+    Empleado obtenerEmpleado(int id) throws Exception;
+    
+    Empleado validCredentials(String usuario, String pass) throws Exception;
+    
+    boolean modificarDatos(Empleado empleadoAux) throws Exception;
     
 }

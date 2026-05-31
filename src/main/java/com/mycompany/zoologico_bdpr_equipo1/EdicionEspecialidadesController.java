@@ -53,7 +53,7 @@ public class EdicionEspecialidadesController implements Initializable {
      */
     public void setListaEspecialidades(ObservableList<String> listaRecomendaciones) {
         this.listaEspecialidades = listaRecomendaciones;
-        tblEspecialidades.setItems(this.listaEspecialidades);
+        cargarDatos();
     }
 
     @Override

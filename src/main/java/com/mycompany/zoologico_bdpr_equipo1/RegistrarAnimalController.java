@@ -71,7 +71,7 @@ public class RegistrarAnimalController implements Initializable {
 
         // Catálogo de especies (ejemplo)
         chkEspecie.setItems(FXCollections.observableArrayList(
-                        "Mamífero",
+                        "Mamifero",
                         "Ave",
                         "Reptil",
                         "Anfibio",

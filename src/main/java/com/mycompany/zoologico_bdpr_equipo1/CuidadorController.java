@@ -8,6 +8,7 @@ import Modelo.Animal;
 import Modelo.Dao.AnimalDAO;
 import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.EmpleadoDAOImpl;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,7 +31,7 @@ import javafx.stage.Stage;
  *
  * @author amiss
  */
-public class ListaAnimalesController {
+public class CuidadorController {
 
     @FXML
     private TableView<Animal> tblAnimales;
@@ -66,11 +67,12 @@ public class ListaAnimalesController {
     private TableColumn<Animal, Void> colTratamientos;
     
     @FXML
-    private Button btnCerrar;
+    private Button btnCerrarSesion;
     
     private AnimalDAO animalDao;
     
     private List<Integer> listaIdAnimales;
+    
 
     /**
      * Permite asignar la lista de la cual cargara los datos de animales
@@ -98,12 +100,29 @@ public class ListaAnimalesController {
     }
     
     /**
-     * Cierra la ventana.
+     * Cierra sesión y regresa al login.
      */
     @FXML
-    private void cerrar() {
-        Stage stage = (Stage) btnCerrar.getScene().getWindow();
-        stage.close();
+    private void cerrarSesion() {
+        try {
+            // Cargar la vista del login
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("login.fxml"));
+            Parent root = loader.load();
+
+            // Crear nueva ventana
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Iniciar Sesión");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+
+            // Cerrar ventana actual
+            Stage stageActual = (Stage) btnCerrarSesion.getScene().getWindow();
+            stageActual.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -127,7 +146,7 @@ public class ListaAnimalesController {
                     } else {
                         
                         try {//abre la ventana de recomendaciones del animal cuyo boton ver se le de clic
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("listaRecomendaciones.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaRecomendaciones.fxml"));
                             Parent vista = loader.load();
 
                             // Obtener controller
@@ -181,7 +200,7 @@ public class ListaAnimalesController {
                     } else {
 
                         try {//abre la ventana de tratamientos del animal cuyo boton ver se le de clic
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("listaTratamientos.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaTratamientos.fxml"));
                             Parent vista = loader.load();
 
                             // Obtener controller
@@ -218,6 +237,8 @@ public class ListaAnimalesController {
     
     /**
      * Carga de datos a la tabla.
+     * si la lista es null, lo llamo el admin
+     * si la lista no es null lo llamo un cuidador
      */
     private void cargarDatos() {
         ObservableList<Animal> lista = FXCollections.observableArrayList();

@@ -64,7 +64,7 @@ public class Cuidador extends Empleado {
      */
     @Override 
     public String getTipo(){
-        return "cuidador";
+        return "Cuidador";
     }
     
     @Override

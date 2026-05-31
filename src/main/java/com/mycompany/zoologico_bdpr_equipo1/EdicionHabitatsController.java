@@ -76,7 +76,7 @@ public class EdicionHabitatsController implements Initializable {
      */
     public void setListaIdHabitats(List<Integer> listaHabitats) {
         this.listaidHabitats = listaHabitats;
-        this.cargarDatos();
+        cargarDatos();
     }
 
     @Override

@@ -8,6 +8,7 @@ import Modelo.Animal;
 import Modelo.Dao.AnimalDAO;
 import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.EmpleadoDAOImpl;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,7 +31,7 @@ import javafx.stage.Stage;
  *
  * @author amiss
  */
-public class ListaAnimalesController {
+public class VeterinarioController {
 
     @FXML
     private TableView<Animal> tblAnimales;
@@ -66,11 +67,14 @@ public class ListaAnimalesController {
     private TableColumn<Animal, Void> colTratamientos;
     
     @FXML
-    private Button btnCerrar;
+    private Button btnCerrarSesion;
     
     private AnimalDAO animalDao;
     
     private List<Integer> listaIdAnimales;
+    
+    private ObservableList<String> recomendacionesCuidado;
+    private ObservableList<String> tratamientos;
 
     /**
      * Permite asignar la lista de la cual cargara los datos de animales
@@ -83,6 +87,9 @@ public class ListaAnimalesController {
     }
 
     public void initialize(URL url, ResourceBundle rb) {
+        
+        //recomendacionesCuidado  = FXCollections.observableArrayList();
+        tratamientos  = FXCollections.observableArrayList();
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombreCientifico.setCellValueFactory(new PropertyValueFactory<>("nombreCientifico"));
@@ -98,12 +105,29 @@ public class ListaAnimalesController {
     }
     
     /**
-     * Cierra la ventana.
+     * Cierra sesión y regresa al login.
      */
     @FXML
-    private void cerrar() {
-        Stage stage = (Stage) btnCerrar.getScene().getWindow();
-        stage.close();
+    private void cerrarSesion() {
+        try {
+            // Cargar la vista del login
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("login.fxml"));
+            Parent root = loader.load();
+
+            // Crear nueva ventana
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Iniciar Sesión");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
+
+            // Cerrar ventana actual
+            Stage stageActual = (Stage) btnCerrarSesion.getScene().getWindow();
+            stageActual.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -113,34 +137,33 @@ public class ListaAnimalesController {
 
         colRecomendaciones.setCellFactory(param -> new TableCell<>() {
 
-            private final Button btn = new Button("Ver");
+            private final Button btn = new Button("Editar");
 
             {
                 btn.setOnAction((ActionEvent event) -> {
                     
-                    Animal animal = getTableView().getItems().get(getIndex());
+                    Animal animalActual = getTableView().getItems().get(getIndex());
 
                     
-                    if (animal.getRecomendacionesCuidado().isEmpty()) {
+                    if (animalActual.getRecomendacionesCuidado().isEmpty()) {
                         mostrarAlerta("Vacío", "No hay recomendaciones para mostrar", Alert.AlertType.INFORMATION);
                         return;
                     } else {
-                        
-                        try {//abre la ventana de recomendaciones del animal cuyo boton ver se le de clic
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("listaRecomendaciones.fxml"));
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionRecomendacionesByVeterinario.fxml"));
                             Parent vista = loader.load();
 
                             // Obtener controller
-                            ListaRecomendacionesController controller = loader.getController();
-
-                            // Pasar datos //Parsear de List a Observable
-                            controller.setListaRecomendaciones(FXCollections.observableList(animal.getRecomendacionesCuidado()));
+                            EdicionRecomendacionesVetController controller = loader.getController();
+                            
+                            // Pasar datos ID
+                            controller.setIdAnimal(animalActual.getId());
 
                             Stage stage = new Stage();
                             stage.setScene(new Scene(vista));
                             stage.show();
 
-                            System.out.println("Abrir recomendaciones de " + animal.getNombreCientifico());
+                            System.out.println("Abrir edición de recomendaciones");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -169,32 +192,32 @@ public class ListaAnimalesController {
 
         colTratamientos.setCellFactory(param -> new TableCell<>() {
 
-            private final Button btn = new Button("Ver");
+            private final Button btn = new Button("Editar");
 
             {
                 btn.setOnAction(event -> {
-                    Animal animal = getTableView().getItems().get(getIndex());
+                    Animal animalActual = getTableView().getItems().get(getIndex());
 
-                    if (animal.getTratamientos().isEmpty()) {
+                    if (animalActual.getTratamientos().isEmpty()) {
                         mostrarAlerta("Vacío", "No hay tratamientos para mostrar.", Alert.AlertType.INFORMATION);
                         return;
                     } else {
 
-                        try {//abre la ventana de tratamientos del animal cuyo boton ver se le de clic
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("listaTratamientos.fxml"));
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionTratamientosByVeterinario.fxml"));
                             Parent vista = loader.load();
 
                             // Obtener controller
-                            ListaTratamientosController controller = loader.getController();
+                            EdicionTratamientosVetController controller = loader.getController();
 
-                            // Pasar datos //Parsear de List a Observable
-                            controller.setListaTratamientos(FXCollections.observableList(animal.getTratamientos()));
+                            // Pasar datos
+                            controller.setIdAnimal(animalActual.getId());
 
                             Stage stage = new Stage();
                             stage.setScene(new Scene(vista));
                             stage.show();
 
-                            System.out.println("Abrir tratamientos de " + animal.getNombreCientifico());
+                            System.out.println("Abrir edición de tratamientos");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -215,9 +238,10 @@ public class ListaAnimalesController {
             }
         });
     }
-    
+
     /**
-     * Carga de datos a la tabla.
+     * Carga de datos a la tabla. si la lista es null, lo llamo el admin si la
+     * lista no es null lo llamo un cuidador
      */
     private void cargarDatos() {
         ObservableList<Animal> lista = FXCollections.observableArrayList();

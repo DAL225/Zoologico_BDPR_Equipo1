@@ -30,7 +30,7 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
         
         return habitat;
     }
-    
+    //usado en edicion por parte de admin
     @Override
     public List<Habitat> obtenerHabitats(List<Integer> ids) throws Exception {
 
@@ -55,5 +55,29 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     public Integer obtenerIdDisponible() throws Exception {
         //aqui algo de orden descending en _id asi creo obtener el max y sumar 1
         return 0;
+    }
+    
+    @Override
+    public boolean modificarDatos(Habitat habitatAux) throws Exception{
+        //update cada dato
+        return true;
+    }
+    
+    @Override
+    public boolean eliminarHabitat(int idHabitat) throws Exception{
+        //logicaOracle
+        //tambien debe buscar en todos los animales quien tenga ese idHabitat y dejarlo en 0
+        return true;
+    }
+    
+    // usado en edicion por veterinario
+    @Override
+    public List<Habitat> obtenerHabitatsPorEmpleado(int idEmpleado) throws Exception{
+        
+        List<Habitat> habitats = new ArrayList<>();
+
+        //logica mongo find
+        
+        return habitats;
     }
 }

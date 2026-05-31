@@ -52,7 +52,7 @@ public class EdicionTratamientosController implements Initializable {
      */
     public void setListaTratamientos(ObservableList<String> listaTratamientos) {
         this.listaTratamientos = listaTratamientos;
-        tblTratamientos.setItems(this.listaTratamientos);
+        cargarDatos();
     }
 
     @Override

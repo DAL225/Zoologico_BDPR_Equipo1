@@ -137,9 +137,8 @@ public class Animal {
     public void setTratamientos(List<String> tratamientos) {
         this.tratamientos = tratamientos;
     }
-
-    @Override
-    public String toString() {
+    
+    public String toString2() {
         return "id=" + id + 
                 ",\nnombreCientifico=" + nombreCientifico + 
                 ",\nespecie=" + especie + 

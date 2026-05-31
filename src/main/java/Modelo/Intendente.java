@@ -49,6 +49,14 @@ public class Intendente extends Empleado{
     public Intendente() {
         this.idsHabitats = new ArrayList<>();
     }
+
+    public List<Integer> getIdsHabitats() {
+        return idsHabitats;
+    }
+
+    public void setIdsHabitats(List<Integer> idsHabitats) {
+        this.idsHabitats = idsHabitats;
+    }
     
     /**
      * Regresa el tipo de empleado que es esta clase.
@@ -56,7 +64,7 @@ public class Intendente extends Empleado{
      */
     @Override 
     public String getTipo(){
-        return "intendente";
+        return "Intendente";
     }
 
     @Override

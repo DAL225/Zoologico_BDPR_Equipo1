@@ -87,9 +87,8 @@ public class Habitat {
     public void setCapacidadAnimales(int capacidadAnimales) {
         this.capacidadAnimales = capacidadAnimales;
     }
-
-    @Override
-    public String toString() {
+    
+    public String toString2() {
         return "id=" + id + 
                 ",\nnombre=" + nombre + 
                 ",\ntipo=" + tipo + 

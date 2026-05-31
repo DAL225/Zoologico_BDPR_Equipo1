@@ -16,32 +16,35 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-public class ListaTratamientosController implements Initializable {
+public class ListaEspecialidadesController implements Initializable {
 
     @FXML
     private Button btnCerrar;
 
     @FXML
-    private TableView<String> tblTratamientos;
+    private TableView<String> tblEspecialidades;
 
     @FXML
-    private TableColumn<String, String> colTratamiento;
+    private TableColumn<String, String> colEspecialidad;
 
-    private ObservableList<String> listaTratamientos;
+    private ObservableList<String> listaEspecialidades;
 
     /**
      * Permite asignar la lista que se mostrará en la tabla.
      *
-     * @param listaTratamientos lista de tratamientos
+     * @param listaEspecialidades lista de especialidades
      */
-    public void setListaTratamientos(ObservableList<String> listaTratamientos) {
-        this.listaTratamientos = listaTratamientos;
+    public void setListaEspecialidades(ObservableList<String> listaEspecialidades) {
+        this.listaEspecialidades = listaEspecialidades;
         cargarDatos();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        colTratamiento.setCellValueFactory( new PropertyValueFactory<>("value"));
+
+        colEspecialidad.setCellValueFactory(
+                new PropertyValueFactory<>("value")
+        );
 
         cargarDatos();
     }
@@ -57,26 +60,27 @@ public class ListaTratamientosController implements Initializable {
      */
     private void cargarDatos() {
 
-        if (listaTratamientos == null || listaTratamientos.isEmpty()) {
-            mostrarAlerta("Vacío", "No hay tratamientos para mostrar.", Alert.AlertType.INFORMATION);
+        if (listaEspecialidades == null || listaEspecialidades.isEmpty()) {
+            mostrarAlerta("Vacío","No hay especialidades para mostrar.",Alert.AlertType.INFORMATION
+            );
             return;
         }
 
-        tblTratamientos.setItems(listaTratamientos);
+        tblEspecialidades.setItems(listaEspecialidades);
     }
 
     /**
-     * Muestra una alerta con el título, mensaje y tipo especificados.
+     * Muestra una alerta.
      *
-     * @param titulo título de la ventana de alerta
-     * @param mensaje contenido mostrado en la alerta
-     * @param tipo tipo de alerta a mostrar
+     * @param titulo título de la alerta
+     * @param mensaje mensaje de la alerta
+     * @param tipo tipo de alerta
      */
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert a = new Alert(tipo);
-        a.setTitle(titulo);
-        a.setHeaderText(null);
-        a.setContentText(mensaje);
-        a.showAndWait();
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
     }
 }

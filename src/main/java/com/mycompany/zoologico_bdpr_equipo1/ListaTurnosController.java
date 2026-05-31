@@ -4,11 +4,14 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Dao.TurnoDAO;
+import Modelo.Impl.TurnoDAOImpl;
 import Modelo.Turno;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,6 +41,8 @@ public class ListaTurnosController implements Initializable {
 
     @FXML
     private TableColumn<Turno, LocalTime> colHoraFin;
+    
+    private TurnoDAO turnoDao;
 
     private ObservableList<Turno> listaTurnos;
 
@@ -48,7 +53,7 @@ public class ListaTurnosController implements Initializable {
      */
     public void setListaTurnos(ObservableList<Turno> listaTurnos) {
         this.listaTurnos = listaTurnos;
-        tblTurnos.setItems(this.listaTurnos);
+        this.cargarDatos();
     }
 
     @Override
@@ -72,14 +77,27 @@ public class ListaTurnosController implements Initializable {
      * Carga los datos en la tabla.
      */
     private void cargarDatos() {
+        ObservableList<Turno> lista = FXCollections.observableArrayList();
 
-        if (listaTurnos == null || listaTurnos.isEmpty()) {
+        try {
+            turnoDao = new TurnoDAOImpl();
+            if (listaTurnos == null) {
+                lista.addAll(turnoDao.obtenerTodosTurnos());
 
-            mostrarAlerta("Vacío","No hay turnos para mostrar.",Alert.AlertType.INFORMATION);
-            return;
+            } else {
+                lista.addAll(listaTurnos);
+            }
+            
+            if (lista == null || lista.isEmpty()) {
+                mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+                return;
+            }
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
         }
 
-        tblTurnos.setItems(listaTurnos);
+        tblTurnos.setItems(lista);
     }
 
     /**

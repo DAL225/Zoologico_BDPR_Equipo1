@@ -50,7 +50,7 @@ public class Administrador extends Empleado{
      */
     @Override 
     public String getTipo(){
-        return "administrador";
+        return "Administrador";
     }
 
     @Override

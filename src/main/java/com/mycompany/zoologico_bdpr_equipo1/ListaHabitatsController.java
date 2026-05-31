@@ -4,9 +4,13 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Dao.HabitatDAO;
 import Modelo.Habitat;
+import Modelo.Impl.HabitatDAOImpl;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,17 +46,19 @@ public class ListaHabitatsController implements Initializable {
 
     @FXML
     private TableColumn<Habitat, Integer> colCapacidad;
+    
+    private HabitatDAO habitatDao;
 
-    private ObservableList<Habitat> listaHabitats;
+    private List<Integer> listaIdHabitats;
 
     /**
      * Permite asignar la lista que se mostrará en la tabla.
      *
      * @param listaHabitats lista de hábitats
      */
-    public void setListaHabitats(ObservableList<Habitat> listaHabitats) {
-        this.listaHabitats = listaHabitats;
-        tblHabitats.setItems(this.listaHabitats);
+    public void setListaHabitats(List<Integer> listaIdHabitats) {
+        this.listaIdHabitats = listaIdHabitats;
+        cargarDatos();
     }
 
     @Override
@@ -75,18 +81,31 @@ public class ListaHabitatsController implements Initializable {
     }
 
     /**
-     * Carga los datos en la tabla.
+    /**
+     * Carga de datos a la tabla.
      */
     private void cargarDatos() {
+        ObservableList<Habitat> lista = FXCollections.observableArrayList();
 
-        if (listaHabitats == null
-                || listaHabitats.isEmpty()) {
+        try {
+            habitatDao = new HabitatDAOImpl();
+            if (listaIdHabitats == null) {
+                lista.addAll(habitatDao.obtenerTodosHabitats());
 
-            mostrarAlerta("Vacío", "No hay hábitats para mostrar.", Alert.AlertType.INFORMATION);
-            return;
+            } else {
+                lista.addAll(habitatDao.obtenerHabitats(listaIdHabitats));
+            }
+            
+            if (lista == null || lista.isEmpty()) {
+                mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+                return;
+            }
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
         }
 
-        tblHabitats.setItems(listaHabitats);
+        tblHabitats.setItems(lista);
     }
 
     /**

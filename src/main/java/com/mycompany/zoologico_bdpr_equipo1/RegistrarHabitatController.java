@@ -47,14 +47,13 @@ public class RegistrarHabitatController implements Initializable {
         // Tipos de hábitat
         chkTipo.getItems().addAll(
                 "Terrestre",
-                "Acuático",
-                "Aéreo",
+                "Acuatico",
+                "Aereo",
                 "Mixto"
         );
 
         // Niveles de limpieza
         chkNivelLimpieza.getItems().addAll(
-                "Especial",
                 "Alto",
                 "Medio",
                 "Bajo"
