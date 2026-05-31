@@ -5,6 +5,7 @@
 package com.mycompany.zoologico_bdpr_equipo1;
 
 import Modelo.Animal;
+import Modelo.Dao.AnimalDAO;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -64,17 +65,7 @@ public class ListaAnimalesController {
     @FXML
     private Button btnCerrar;
     
-    private ObservableList<Animal> listaAnimales;
-
-    /**
-     * Permite asignar la lista de la cual cargara los datos de animales
-     * public porque se accede desde la ventana padre del empleado a modificar o agregar
-     * @param listaAnimales lista de la cual se cargaran datos en la tabla
-     */
-    public void setListaAnimales(ObservableList<Animal> listaAnimales) {
-        this.listaAnimales = listaAnimales;
-        tblAnimales.setItems(this.listaAnimales);
-    }
+    private AnimalDAO animalDao;
 
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -215,13 +206,38 @@ public class ListaAnimalesController {
      */
     private void cargarDatos() {
 
-        if (listaAnimales == null || listaAnimales.isEmpty()) {
-            mostrarAlerta("Vacío", "No hay animales para mostrar.", Alert.AlertType.INFORMATION);
-            return;
-        }
-
-        tblAnimales.setItems(listaAnimales);
+//        if (listaAnimales == null || listaAnimales.isEmpty()) {
+//            mostrarAlerta("Vacío", "No hay animales para mostrar.", Alert.AlertType.INFORMATION);
+//            return;
+//        }
+//
+//        tblAnimales.setItems(listaAnimales);
     }
+    
+//    /**
+//     * Carga de datos a la tabla.
+//     */
+//    private void cargarDatos() {
+//        ObservableList<Animal> lista = FXCollections.observableArrayList();
+//        
+//        try{
+//            animalDao = new EmpleadoDAOImpl();
+//            
+//            lista = FXCollections.observableArrayList(empleadoDao.obtenerEmpleados());
+//            
+//            if (lista == null || lista.isEmpty()){
+//                mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+//                forzarCierre();
+//                return;
+//            }
+//        } catch (Exception e) {
+//        mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
+//        forzarCierre();
+//    }
+//        
+//        tblEmpleados.setItems(lista);
+//        
+//    }
 
     /**
      * Muestra una alerta con el título, mensaje y tipo especificados.

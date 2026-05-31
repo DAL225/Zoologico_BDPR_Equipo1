@@ -8,6 +8,8 @@ import Modelo.Animal;
 import Modelo.Habitat;
 import Modelo.Turno;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,16 +63,16 @@ public class RegistrarEmpleadoController implements Initializable {
     private AnchorPane subPnlIntendente;
     
     private ObservableList<Turno> listaTurnos;
-    private ObservableList<Animal> listaAnimales;
-    private ObservableList<Habitat> listaHabitats;
+    private List<Integer> listaIdAnimales;
+    private List<Integer> listaIdHabitats;
     private ObservableList<String> listaEspecialidades;
     
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         listaTurnos = FXCollections.observableArrayList();
-        listaAnimales = FXCollections.observableArrayList();
-        listaHabitats = FXCollections.observableArrayList();
+        listaIdAnimales = new ArrayList<>();
+        listaIdHabitats = new ArrayList<>();
         listaEspecialidades = FXCollections.observableArrayList();
 
         chkTipoEmpleado.setItems(
@@ -165,7 +167,7 @@ public class RegistrarEmpleadoController implements Initializable {
         EdicionAnimalesController controller = loader.getController();
 
         // Pasar datos
-        controller.setListaAnimales(listaAnimales);
+        controller.setListaIdAnimales(listaIdAnimales);
 
         Stage stage = new Stage();
         stage.setScene(new Scene(vista));
@@ -215,7 +217,7 @@ public class RegistrarEmpleadoController implements Initializable {
         EdicionHabitatsController controller = loader.getController();
 
         // Pasar datos
-        controller.setListaHabitats(listaHabitats);
+        controller.setListaIdHabitats(listaIdHabitats);
 
         Stage stage = new Stage();
         stage.setScene(new Scene(vista));
@@ -242,11 +244,9 @@ public class RegistrarEmpleadoController implements Initializable {
                 || usuario.isEmpty()
                 || password.isEmpty()
                 || tipoEmpleado == null) {
-
-            if(tipoEmpleado.equals(nombre))
             mostrarAlerta("Campos incompletos", "Todos los campos son obligatorios.", Alert.AlertType.WARNING);
-            return;
         }
+        
 
         // TODO:
         // Crear objeto correspondiente:

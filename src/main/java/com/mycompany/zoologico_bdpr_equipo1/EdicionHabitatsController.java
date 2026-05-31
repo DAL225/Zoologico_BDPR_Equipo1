@@ -6,8 +6,11 @@ package com.mycompany.zoologico_bdpr_equipo1;
 
 import Modelo.Dao.HabitatDAO;
 import Modelo.Habitat;
+import Modelo.Impl.HabitatDAOImpl;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -63,7 +66,7 @@ public class EdicionHabitatsController implements Initializable {
 
     private HabitatDAO habitatDao;
 
-    private ObservableList<Habitat> listaHabitats;
+    private List<Integer> listaidHabitats;
 
     /**
      * Permite asignar la lista de habitats que sera mostrada en la tabla.
@@ -71,9 +74,9 @@ public class EdicionHabitatsController implements Initializable {
      *
      * @param listaHabitats lista observable de habitats
      */
-    public void setListaHabitats(ObservableList<Habitat> listaHabitats) {
-        this.listaHabitats = listaHabitats;
-        tblHabitats.setItems(this.listaHabitats);
+    public void setListaIdHabitats(List<Integer> listaHabitats) {
+        this.listaidHabitats = listaHabitats;
+        this.cargarDatos();
     }
 
     @Override
@@ -121,9 +124,9 @@ public class EdicionHabitatsController implements Initializable {
 
         System.out.println("Agregar habitat con id: " + idHabitat);
 
-        // Aqui posteriormente puedes:
+        // Aqui :
+        // 2. Validar duplicados for int en listaids
         // 1. Buscar el habitat desde DAO
-        // 2. Validar duplicados
         // 3. Agregarlo a la lista
         
     }
@@ -149,8 +152,9 @@ public class EdicionHabitatsController implements Initializable {
 
                     Habitat habitatSeleccionado
                             = getTableView().getItems().get(getIndex());
-
-                    listaHabitats.remove(habitatSeleccionado);
+                    //se elimina de la lista de ids, y de la tabla
+                    listaidHabitats.remove(Integer.valueOf(habitatSeleccionado.getId()));
+                    getTableView().getItems().remove(habitatSeleccionado);
 
                     System.out.println(
                             "Eliminar habitat: "
@@ -177,11 +181,21 @@ public class EdicionHabitatsController implements Initializable {
      * Carga la lista de habitats en la tabla.
      */
     private void cargarDatos() {
-        if (listaHabitats == null || listaHabitats.isEmpty()) {
+        ObservableList<Habitat> listaHabitats = FXCollections.observableArrayList();
+        
+        if (listaidHabitats == null || listaidHabitats.isEmpty()) {
             mostrarAlerta("Vacio", "No hay habitats para mostrar", Alert.AlertType.INFORMATION);
             return;
         }
-
+        try{
+            habitatDao = new HabitatDAOImpl();
+            listaHabitats.addAll(habitatDao.obtenerHabitats(listaidHabitats));
+            
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            this.mostrarAlerta("Error", "Error al obtener datos", Alert.AlertType.NONE);
+        }
+        
         tblHabitats.setItems(listaHabitats);
     }
 

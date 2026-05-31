@@ -2,8 +2,11 @@ package com.mycompany.zoologico_bdpr_equipo1;
 
 import Modelo.Animal;
 import Modelo.Dao.AnimalDAO;
+import Modelo.Impl.AnimalDAOImpl;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,17 +65,19 @@ public class EdicionAnimalesController implements Initializable {
 
     @FXML
     private Button btnAgregar;
+
+    private AnimalDAO animalDao;
             
-    private ObservableList<Animal> listaAnimales;
+    private List<Integer> listaIdAnimales;
 
     /**
      * Permite asignar la lista de la cual cargara los datos de animales
      * public porque se accede desde la ventana padre del empleado a modificar o agregar
      * @param listaAnimales lista de la cual se cargaran datos en la tabla
      */
-    public void setListaAnimales(ObservableList<Animal> listaAnimales) {
-        this.listaAnimales = listaAnimales;
-        tblAnimales.setItems(this.listaAnimales);
+    public void setListaIdAnimales(List<Integer> listaIdAnimales) {
+        this.listaIdAnimales = listaIdAnimales;
+        cargarDatos();
     }
 
     @Override
@@ -95,7 +100,7 @@ public class EdicionAnimalesController implements Initializable {
         // 3. Configuración de la columna con el Botón Eliminar
         configurarColumnaEliminar();
 
-        // Aquí puedes llamar a tu método para cargar los datos desde la base de datos si lo tienes, por ejemplo:
+        // método para cargar los datos desde la base de datos
         cargarDatos();
         
         
@@ -133,7 +138,9 @@ public class EdicionAnimalesController implements Initializable {
                     Animal animalSeleccionado
                             = getTableView().getItems().get(getIndex());
 
-                    listaAnimales.remove(animalSeleccionado);
+                    //se elimina de la lista de ids, y de la tabla
+                    listaIdAnimales.remove(Integer.valueOf(animalSeleccionado.getId()));
+                    getTableView().getItems().remove(animalSeleccionado);
 
                     System.out.println("Eliminar a: "
                             + animalSeleccionado.getNombreComun());
@@ -157,14 +164,24 @@ public class EdicionAnimalesController implements Initializable {
      * Carga de datos a la tabla.
      */
     private void cargarDatos() {
-        if (listaAnimales == null || listaAnimales.isEmpty()) {
-            mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+        ObservableList<Animal> listaAnimales = FXCollections.observableArrayList();
+
+        if (listaIdAnimales == null || listaIdAnimales.isEmpty()) {
+            mostrarAlerta("Vacio", "No hay animales para mostrar", Alert.AlertType.INFORMATION);
             return;
+        }
+        try {
+            animalDao = new AnimalDAOImpl();
+            listaAnimales.addAll(animalDao.obtenerAnimales(listaIdAnimales));
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            this.mostrarAlerta("Error", "Error al obtener datos", Alert.AlertType.NONE);
         }
 
         tblAnimales.setItems(listaAnimales);
-
     }
+
 
     /**
      * Muestra una alerta con el título, mensaje y tipo especificados.
