@@ -129,11 +129,8 @@ public class ModificarHabitatController implements Initializable {
         habitatActual.setCapacidadAnimales(spnCapacidad.getValue());
 
         try {
-
             if (habitatDao.modificarDatos(habitatActual)) {
-
                 mostrarAlerta("Éxito","Hábitat modificado correctamente",Alert.AlertType.INFORMATION);
-
                 limpiarCamposModificar();
                 return;
             }
@@ -141,7 +138,6 @@ public class ModificarHabitatController implements Initializable {
             mostrarAlerta("Fracaso","No se pudo modificar el hábitat",Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
-
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

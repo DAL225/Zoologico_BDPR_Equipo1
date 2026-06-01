@@ -4,6 +4,11 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Dao.HabitatDAO;
+import Modelo.Dao.TurnoDAO;
+import Modelo.Habitat;
+import Modelo.Impl.HabitatDAOImpl;
+import Modelo.Turno;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -40,6 +45,8 @@ public class RegistrarHabitatController implements Initializable {
 
     @FXML
     private Button btnRegistrarHabitat;
+    
+    private HabitatDAO habitatDao;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -83,9 +90,28 @@ public class RegistrarHabitatController implements Initializable {
             return;
         }
 
-        // y llamarás al DAO para insertar.
-        //Del DAO se obtiene el siguiente id
-        //try-catch con DAO agregar
+        try{
+            habitatDao = new HabitatDAOImpl();
+            int iDDisponible = habitatDao.obtenerIdDisponible();
+            
+            Habitat habitatAux = new Habitat();
+            habitatAux.setId(iDDisponible);
+            habitatAux.setNombre(nombre);
+            habitatAux.setTipo(tipo);
+            habitatAux.setClima(clima);
+            habitatAux.setNivelLimpieza(nivelLimpieza);
+            habitatAux.setCapacidadAnimales(capacidad);
+            if (habitatDao.agregarHabitat(habitatAux)) {
+                mostrarAlerta("Registro", "Elemento registrado correctamente.", Alert.AlertType.INFORMATION);
+                this.limpiarCampos();
+                return;
+            }
+            mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.INFORMATION);
+        }
+
     }
     
     /**
@@ -101,5 +127,24 @@ public class RegistrarHabitatController implements Initializable {
         a.setHeaderText(null);
         a.setContentText(mensaje);
         a.showAndWait();
+    }
+    
+    /**
+     * Limpia los campos de texto, desmarca los ChoiceBox y reinicia el Spinner
+     * a su valor inicial.
+     */
+    private void limpiarCampos() {
+        // Limpiar TextFields
+        txtNombre.clear();
+        txtClima.clear();
+
+        // Restablecer ChoiceBox (quita la selección actual)
+        chkTipo.getSelectionModel().clearSelection();
+        chkNivelLimpieza.getSelectionModel().clearSelection();
+
+        // Reiniciar Spinner al valor mínimo inicial (1)
+        if (spnCapacidad.getValueFactory() != null) {
+            spnCapacidad.getValueFactory().setValue(1);
+        }
     }
 }

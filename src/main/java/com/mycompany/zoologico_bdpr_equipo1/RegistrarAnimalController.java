@@ -4,7 +4,12 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Animal;
 import Modelo.Dao.AnimalDAO;
+import Modelo.Dao.HabitatDAO;
+import Modelo.Habitat;
+import Modelo.Impl.AnimalDAOImpl;
+import Modelo.Impl.HabitatDAOImpl;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -60,6 +65,7 @@ public class RegistrarAnimalController implements Initializable {
     private ObservableList<String> listaTratamientos;
     
     private AnimalDAO animalDao;
+    private HabitatDAO habitatDao;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -102,43 +108,41 @@ public class RegistrarAnimalController implements Initializable {
             mostrarAlerta("Campos incompletos", "Debe completar todos los campos obligatorios", Alert.AlertType.WARNING);
             return;
         }
-
-        // TODO:
-        // Crear objeto Animal
-        // Insertar en BD mediante AnimalDAO
-        // Asociar recomendaciones
-        // Asociar tratamientos
         
-//        try {
-//            almacenDao = new ProductoAlmacenDAOImpl();
-//
-//            String marca = txtMarca.getText().trim();
-//            String tipo = selecTipo.getValue(); 
-//            int stock = spnStock.getValueFactory().getValue();
-//            String proveedor = txtProveedor.getText().trim();
-//
-//            if (!longitudCaracteresAgregarValida()){
-//                return;
-//            }
-//
-//            ProductoAlmacen producto = new ProductoAlmacen(marca, tipo, stock, proveedor);
-//
-//            if (almacenDao.agregarProductoAlmacen(producto)) {
-//                mostrarAlerta("Exito","Elemento registrado correctamente.",Alert.AlertType.INFORMATION);
-//                limpiarCamposAgregar();
-//                return;
-//            }
-//
-//            mostrarAlerta("Fracaso", "El elemento no se pudo registrar", Alert.AlertType.INFORMATION);
-//
-//        } catch (Exception e) {
-//            mostrarAlerta("Error ", e.getMessage(), Alert.AlertType.ERROR);
-//            if (e.getMessage() != null && e.getMessage().equals("Error de acceso a la BD, intente mas tarde")){
-//                limpiarCamposAgregar();
-//            }
-//        }
+        try{
+            //Verificar Id del habitat exista
+            habitatDao = new HabitatDAOImpl();
+            Habitat habitatAux = habitatDao.obtenerHabitat(idHabitat);
+            
+            if(habitatAux == null){
+                mostrarAlerta("Habitat null", "El ID de habitat seleccionado no existe", Alert.AlertType.WARNING);
+                return;
+            }
+            
+            animalDao = new AnimalDAOImpl();
+            int iDDisponible = animalDao.obtenerIdDisponible();
+            
+            Animal animalAux = new Animal();
+            animalAux.setId(iDDisponible);
+            animalAux.setNombreCientifico(nombreCientifico);
+            animalAux.setNombreComun(nombreComun);
+            animalAux.setEspecie(especie);
+            animalAux.setSexo(sexo);
+            animalAux.setEstadoSalud(estadoSalud);
+            animalAux.setIdHabitat(idHabitat);
+            animalAux.setRecomendacionesCuidado(listaRecomendaciones);
+            animalAux.setTratamientos(listaTratamientos);
+            
+            if (habitatDao.agregarHabitat(habitatAux)) {
+                mostrarAlerta("Registro", "Elemento registrado correctamente.", Alert.AlertType.INFORMATION);
+                this.limpiarCamposAgregar();
+                return;
+            }
+            mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
 
-        
+        } catch (Exception e) {
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.INFORMATION);
+        }
     }
 
     /**

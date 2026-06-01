@@ -4,10 +4,22 @@
  */
 package Modelo.Dao;
 
+import Modelo.Intendente;
+import java.util.List;
+
 /**
  *
  * @author amiss
  */
 public interface IntendenteDAO {
     
+    Intendente obtenerIntendente(int id) throws Exception;
+    
+    boolean agregarIntendente(Intendente intendenteAux) throws Exception;
+    
+    boolean modificarIntendente(Intendente intendenteAux) throws Exception;
+    
+    List<Integer> obtenerIdsHabitats(int idIntendente) throws Exception;
+    
+    boolean eliminarIdHabitat(int idHabitat) throws Exception;
 }

@@ -4,9 +4,21 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Administrador;
 import Modelo.Animal;
+import Modelo.Cuidador;
+import Modelo.Dao.AdministradorDAO;
+import Modelo.Dao.CuidadorDAO;
+import Modelo.Dao.IntendenteDAO;
+import Modelo.Dao.VeterinarioDAO;
 import Modelo.Habitat;
+import Modelo.Impl.AdministradorDAOImpl;
+import Modelo.Impl.CuidadorDAOImpl;
+import Modelo.Impl.IntendenteDAOImpl;
+import Modelo.Impl.VeterinarioDAOImpl;
+import Modelo.Intendente;
 import Modelo.Turno;
+import Modelo.Veterinario;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +79,11 @@ public class RegistrarEmpleadoController implements Initializable {
     private List<Integer> listaIdHabitats;
     private ObservableList<String> listaEspecialidades;
     
+    private AdministradorDAO adminDao;
+    private CuidadorDAO cuidadorDao;
+    private VeterinarioDAO veterinarioDao;
+    private IntendenteDAO intendenteDao;
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -110,18 +127,21 @@ public class RegistrarEmpleadoController implements Initializable {
                 stckPane.setVisible(false);
                 break;
             case "Veterinario":
+                stckPane.setVisible(true);
                 subPnlCuidador.setVisible(false);
                 subPnlIntendente.setVisible(false);
                 subPnlVeterinario.setVisible(true);
                 break;
 
             case "Cuidador":
+                stckPane.setVisible(true);
                 subPnlIntendente.setVisible(false);
                 subPnlVeterinario.setVisible(false);
                 subPnlCuidador.setVisible(true);
                 break;
 
             case "Intendente":
+                stckPane.setVisible(true);
                 subPnlVeterinario.setVisible(false);
                 subPnlCuidador.setVisible(false);
                 subPnlIntendente.setVisible(true);
@@ -247,13 +267,89 @@ public class RegistrarEmpleadoController implements Initializable {
             mostrarAlerta("Campos incompletos", "Todos los campos son obligatorios.", Alert.AlertType.WARNING);
         }
         
-
-        // TODO:
-        // Crear objeto correspondiente:
-        // Veterinario, Cuidador o Intendente
-        // y registrarlo mediante DAO.
-
-        mostrarAlerta("Registro", "Empleado registrado correctamente.", Alert.AlertType.INFORMATION);
+        try{
+            switch(tipoEmpleado){
+                case("Administrador"):
+                    adminDao = new AdministradorDAOImpl();
+                    
+                    Administrador adminAux = new Administrador();
+                    adminAux.setNombre(nombre);
+                    adminAux.setUsuario(usuario);
+                    adminAux.setPassword(password);
+                    adminAux.setTurnos(listaTurnos);
+                    
+                    if(adminDao.agregarAdministardor(adminAux)){
+                        mostrarAlerta("Registro", "Empleado registrado correctamente.", Alert.AlertType.INFORMATION);
+                        this.limpiarCampos();
+                        return;
+                    }
+                    mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
+                break;
+                
+                case("Veterinario"):
+                    veterinarioDao = new VeterinarioDAOImpl();
+                    
+                    Veterinario veterinarioAux = new Veterinario();
+                    veterinarioAux.setNombre(nombre);
+                    veterinarioAux.setUsuario(usuario);
+                    veterinarioAux.setPassword(password);
+                    veterinarioAux.setTurnos(listaTurnos);
+                    veterinarioAux.setEspecialidades(listaEspecialidades);
+                    veterinarioAux.setIdsAnimales(listaIdAnimales);
+                    
+                    if(veterinarioDao.agregarVeterinario(veterinarioAux)){
+                        mostrarAlerta("Registro", "Empleado registrado correctamente.", Alert.AlertType.INFORMATION);
+                        this.limpiarCampos();
+                        return;
+                    }
+                    mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
+                
+                break;
+                
+                
+                case("Cuidador"):
+                    cuidadorDao = new CuidadorDAOImpl();
+                    
+                    Cuidador cuidadorAux = new Cuidador();
+                    cuidadorAux.setNombre(nombre);
+                    cuidadorAux.setUsuario(usuario);
+                    cuidadorAux.setPassword(password);
+                    cuidadorAux.setTurnos(listaTurnos);
+                    cuidadorAux.setIdsAnimales(listaIdAnimales);
+                    
+                    if(cuidadorDao.agregarCuidador(cuidadorAux)){
+                        mostrarAlerta("Registro", "Empleado registrado correctamente.", Alert.AlertType.INFORMATION);
+                        this.limpiarCampos();
+                        return;
+                    }
+                    mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
+                
+                break;
+                
+                case("Intendente"):
+                    intendenteDao = new IntendenteDAOImpl();
+                    
+                    Intendente intendenteAux = new Intendente();
+                    intendenteAux.setNombre(nombre);
+                    intendenteAux.setUsuario(usuario);
+                    intendenteAux.setPassword(password);
+                    intendenteAux.setTurnos(listaTurnos);
+                    intendenteAux.setIdsHabitats(listaIdHabitats);
+                    
+                    if(intendenteDao.agregarIntendente(intendenteAux)){
+                        mostrarAlerta("Registro", "Empleado registrado correctamente.", Alert.AlertType.INFORMATION);
+                        this.limpiarCampos();
+                        return;
+                    }
+                    mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
+                break;
+            }
+            
+            
+        }catch(Exception e){
+            mostrarAlerta("Error", "Ocurrio un error", Alert.AlertType.INFORMATION);
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -269,5 +365,35 @@ public class RegistrarEmpleadoController implements Initializable {
         a.setHeaderText(null);
         a.setContentText(mensaje);
         a.showAndWait();
+    }
+    
+    /**
+     * Limpia todos los campos de texto, restablece el ChoiceBox y vacía por
+     * completo las listas de datos temporales.
+     */
+    private void limpiarCampos() {
+        // 1. Limpiar TextFields
+        txtNombre.clear();
+        txtUsuario.clear();
+        txtPassword.clear();
+
+        // 2. Restablecer ChoiceBox al primer elemento ("Administrador")
+        if (chkTipoEmpleado.getItems() != null && !chkTipoEmpleado.getItems().isEmpty()) {
+            chkTipoEmpleado.getSelectionModel().selectFirst();
+        }
+
+        // 3. Vaciar colecciones y listas (tanto ObservableList como ArrayList)
+        if (listaTurnos != null) {
+            listaTurnos.clear();
+        }
+        if (listaIdAnimales != null) {
+            listaIdAnimales.clear();
+        }
+        if (listaIdHabitats != null) {
+            listaIdHabitats.clear();
+        }
+        if (listaEspecialidades != null) {
+            listaEspecialidades.clear();
+        }
     }
 }

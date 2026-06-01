@@ -183,8 +183,8 @@ public class ModificarTurnoController implements Initializable {
         turnoActual.setHoraFin(horaFin);
 
         try {
-
-            if (turnoDao.modificarDatos(turnoActual)) {
+            turnoDao = new TurnoDAOImpl();
+            if (turnoDao.modificarTurno(turnoActual)) {
 
                 mostrarAlerta("Éxito", "Turno modificado correctamente", Alert.AlertType.INFORMATION);
                 limpiarCamposModificar();

@@ -28,4 +28,6 @@ public interface AnimalDAO {
     boolean modificarRecomendaciones(int idAnimal, List<String> recomendaciones) throws Exception;
     
     boolean modificarTratamientos(int idAnimal, List<String> tratamientos) throws Exception;
+    
+    boolean desasignarHabitat(int idAnimal) throws Exception;
 }

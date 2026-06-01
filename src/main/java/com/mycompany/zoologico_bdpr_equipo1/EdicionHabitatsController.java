@@ -120,15 +120,31 @@ public class EdicionHabitatsController implements Initializable {
     @FXML
     private void agregarHabitat(ActionEvent event) {
 
-        int idHabitat = spnIdHabitat.getValue();
+        int idAgregar = spnIdHabitat.getValue();
 
-        System.out.println("Agregar habitat con id: " + idHabitat);
-
-        // Aqui :
-        // 2. Validar duplicados for int en listaids
-        // 1. Buscar el habitat desde DAO
-        // 3. Agregarlo a la lista
+        if(listaidHabitats != null && !listaidHabitats.isEmpty()){
+            for(int idAux : listaidHabitats){
+                if(idAgregar == idAux){
+                    mostrarAlerta("Existente", "El elemento ya esta agregado", Alert.AlertType.INFORMATION);
+                    return;
+                }
+            }
+        }
         
+        try{
+            habitatDao = new HabitatDAOImpl();
+            Habitat habitatAux = habitatDao.obtenerHabitat(idAgregar);
+            
+            if(habitatAux != null){
+                this.listaidHabitats.add(idAgregar);
+                mostrarAlerta("Exito", "Elemento agregado correctamente", Alert.AlertType.INFORMATION);
+                cargarDatos();
+            }
+            mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
+        }catch(Exception e){
+            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     /**

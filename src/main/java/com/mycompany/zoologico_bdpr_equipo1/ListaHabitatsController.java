@@ -54,7 +54,7 @@ public class ListaHabitatsController implements Initializable {
     /**
      * Permite asignar la lista que se mostrará en la tabla.
      *
-     * @param listaHabitats lista de hábitats
+     * @param listaIdHabitats lista de ids de hábitats
      */
     public void setListaHabitats(List<Integer> listaIdHabitats) {
         this.listaIdHabitats = listaIdHabitats;

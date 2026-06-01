@@ -4,12 +4,21 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Administrador;
 import Modelo.Empleado;
 import Modelo.Veterinario;
 import Modelo.Cuidador;
+import Modelo.Dao.AdministradorDAO;
+import Modelo.Dao.CuidadorDAO;
 import Modelo.Intendente;
 import Modelo.Dao.EmpleadoDAO;
+import Modelo.Dao.IntendenteDAO;
+import Modelo.Dao.VeterinarioDAO;
+import Modelo.Impl.AdministradorDAOImpl;
+import Modelo.Impl.CuidadorDAOImpl;
 import Modelo.Impl.EmpleadoDAOImpl;
+import Modelo.Impl.IntendenteDAOImpl;
+import Modelo.Impl.VeterinarioDAOImpl;
 import Modelo.Turno;
 
 import java.net.URL;
@@ -55,6 +64,11 @@ public class ModificarEmpleadoController implements Initializable {
 
     private Empleado empleadoActual;
     private EmpleadoDAO empleadoDao;
+    
+    private AdministradorDAO adminDao;
+    private CuidadorDAO cuidadorDao;
+    private VeterinarioDAO veterinarioDao;
+    private IntendenteDAO intendenteDao;
 
     // mismas estructuras que registrar
     private ObservableList<Turno> listaTurnos;
@@ -91,14 +105,32 @@ public class ModificarEmpleadoController implements Initializable {
 
         try {
             empleadoDao = new EmpleadoDAOImpl();
-
-            empleadoActual = empleadoDao.obtenerEmpleado(id);
-
-            if (empleadoActual == null) {
+            
+            String tipo = empleadoDao.obtenerTipoEmpleado(id);
+            
+            if (tipo == null) {
                 mostrarAlerta("Error", "Empleado no encontrado", Alert.AlertType.ERROR);
                 return;
             }
-
+            switch(tipo){
+                case("administrador"):
+                    adminDao = new AdministradorDAOImpl();
+                    empleadoActual = adminDao.obtenerAdministrador(id);
+                break;
+                case("cuidador"):
+                    cuidadorDao = new CuidadorDAOImpl();
+                    empleadoActual = cuidadorDao.obtenerCuidador(id);
+                break;
+                case("veterinario"):
+                    veterinarioDao = new VeterinarioDAOImpl();
+                    empleadoActual = veterinarioDao.obtenerVeterinario(id);
+                break;
+                case("intendente"):
+                    intendenteDao = new IntendenteDAOImpl();
+                    empleadoActual = intendenteDao.obtenerIntendente(id);
+                break;
+            }
+            
             // mostrar panel base
             subPnlCamposMod.setVisible(true);
 
@@ -113,8 +145,13 @@ public class ModificarEmpleadoController implements Initializable {
             subPnlIntendente.setVisible(false);
 
             // mostrar según tipo (igual que registrar)
-            if (empleadoActual instanceof Veterinario) {
+            if (empleadoActual instanceof Administrador) {
+                Administrador admin = (Administrador) empleadoActual;
+                stckPane.setVisible(false);
+
+            }else if (empleadoActual instanceof Veterinario) {
                 Veterinario vet = (Veterinario) empleadoActual;
+                stckPane.setVisible(true);
                 subPnlVeterinario.setVisible(true);
 
                 listaIdAnimales.clear();
@@ -122,7 +159,7 @@ public class ModificarEmpleadoController implements Initializable {
 
             } else if (empleadoActual instanceof Cuidador) {
                 Cuidador cui = (Cuidador) empleadoActual;
-
+                stckPane.setVisible(true);
                 subPnlCuidador.setVisible(true);
 
                 listaIdAnimales.clear();
@@ -130,7 +167,7 @@ public class ModificarEmpleadoController implements Initializable {
 
             } else if (empleadoActual instanceof Intendente) {
                 Intendente intd = (Intendente) empleadoActual;
-                
+                stckPane.setVisible(true);
                 subPnlIntendente.setVisible(true);
 
                 listaIdHabitats.clear();
@@ -157,25 +194,56 @@ public class ModificarEmpleadoController implements Initializable {
             empleadoActual.setPassword(txtPassword.getText().trim());
 
             // actualizar estructuras también
+            if (empleadoActual instanceof Administrador) {
+                Administrador admin = (Administrador) empleadoActual;
+                adminDao = new AdministradorDAOImpl();
+
+                if (adminDao.modificarAdministardor(admin)) {
+                    mostrarAlerta("Éxito", "Elemento modificado correctamente", Alert.AlertType.INFORMATION);
+                    limpiarCampos();
+                    return;
+                }
+                mostrarAlerta("Fracaso", "El elemento no se pudo modificar", Alert.AlertType.INFORMATION);
+
+            }
             if (empleadoActual instanceof Veterinario) {
                 Veterinario vet = (Veterinario) empleadoActual;
                 vet.setIdsAnimales(listaIdAnimales);
                 vet.setEspecialidades(listaEspecialidades);
+                
+                veterinarioDao = new VeterinarioDAOImpl();
+                if(veterinarioDao.modificarVeterinario(vet)){
+                    mostrarAlerta("Éxito", "Elemento modificado correctamente", Alert.AlertType.INFORMATION);
+                    limpiarCampos();
+                    return;
+                }
+                mostrarAlerta("Fracaso", "El elemento no se pudo modificar", Alert.AlertType.INFORMATION);
             }
 
             if (empleadoActual instanceof Cuidador) {
                 Cuidador cui = (Cuidador) empleadoActual;
                 cui.setIdsAnimales(listaIdAnimales);
+                
+                cuidadorDao = new CuidadorDAOImpl();
+                if(cuidadorDao.modificarCuidador(cui)){
+                    mostrarAlerta("Éxito", "Elemento modificado correctamente", Alert.AlertType.INFORMATION);
+                    limpiarCampos();
+                    return;
+                }
+                mostrarAlerta("Fracaso", "El elemento no se pudo modificar", Alert.AlertType.INFORMATION);
             }
 
             if (empleadoActual instanceof Intendente) {
                 Intendente intd = (Intendente) empleadoActual;
                 intd.setIdsHabitats(listaIdHabitats);
-            }
-
-            if (empleadoDao.modificarDatos(empleadoActual)) {
-                mostrarAlerta("Éxito", "Empleado modificado correctamente",
-                        Alert.AlertType.INFORMATION);
+                
+                intendenteDao = new IntendenteDAOImpl();
+                if(intendenteDao.modificarIntendente(intd)){
+                    mostrarAlerta("Éxito", "Elemento modificado correctamente", Alert.AlertType.INFORMATION);
+                    limpiarCampos();
+                    return;
+                }
+                mostrarAlerta("Fracaso", "El elemento no se pudo modificar", Alert.AlertType.INFORMATION);
             }
 
         } catch (Exception e) {
@@ -285,5 +353,35 @@ public class ModificarEmpleadoController implements Initializable {
         a.setHeaderText(null);
         a.setContentText(mensaje);
         a.showAndWait();
+    }
+    
+    /**
+     * Limpia por completo el formulario devolviéndolo a su estado inicial.
+     */
+    private void limpiarCampos() {
+        // 1. Limpiar TextFields generales
+        txtNombre.clear();
+        txtUsuario.clear();
+        txtPassword.clear();
+
+        // Limpiar listas de datos locales
+        if (listaTurnos != null) listaTurnos.clear();
+        if (listaIdAnimales != null) listaIdAnimales.clear();
+        if (listaIdHabitats != null) listaIdHabitats.clear();
+        if (listaEspecialidades != null) listaEspecialidades.clear();
+
+        // Romper enlace con el objeto anterior
+        empleadoActual = null;
+
+        // 4. Ocultar contenedores visuales
+        subPnlCamposMod.setVisible(false);
+        subPnlVeterinario.setVisible(false);
+        subPnlCuidador.setVisible(false);
+        subPnlIntendente.setVisible(false);
+
+        // Resetear el Spinner del buscador al primer ID
+        if (spnIdEmpleado.getValueFactory() != null) {
+            spnIdEmpleado.getValueFactory().setValue(1);
+        }
     }
 }
