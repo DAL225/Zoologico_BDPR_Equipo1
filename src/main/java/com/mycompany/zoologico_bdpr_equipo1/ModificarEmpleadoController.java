@@ -198,7 +198,7 @@ public class ModificarEmpleadoController implements Initializable {
                 Administrador admin = (Administrador) empleadoActual;
                 adminDao = new AdministradorDAOImpl();
 
-                if (adminDao.modificarAdministardor(admin)) {
+                if (adminDao.modificarAdministrador(admin)) {
                     mostrarAlerta("Éxito", "Elemento modificado correctamente", Alert.AlertType.INFORMATION);
                     limpiarCampos();
                     return;

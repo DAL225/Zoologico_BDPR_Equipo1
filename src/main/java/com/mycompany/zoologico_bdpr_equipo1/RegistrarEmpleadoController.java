@@ -155,7 +155,7 @@ public class RegistrarEmpleadoController implements Initializable {
     @FXML
     private void agregarTurnos(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionTurnos.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionTurnos.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -180,7 +180,7 @@ public class RegistrarEmpleadoController implements Initializable {
     @FXML
     private void agregarAnimales(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionAnimales.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionAnimales.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -205,7 +205,7 @@ public class RegistrarEmpleadoController implements Initializable {
     @FXML
     private void agregarEspecialidades(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionRecomendaciones.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionRecomendaciones.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -230,7 +230,7 @@ public class RegistrarEmpleadoController implements Initializable {
     @FXML
     private void agregarHabitats(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionAnimales.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionAnimales.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -278,7 +278,7 @@ public class RegistrarEmpleadoController implements Initializable {
                     adminAux.setPassword(password);
                     adminAux.setTurnos(listaTurnos);
                     
-                    if(adminDao.agregarAdministardor(adminAux)){
+                    if(adminDao.agregarAdministrador(adminAux)){
                         mostrarAlerta("Registro", "Empleado registrado correctamente.", Alert.AlertType.INFORMATION);
                         this.limpiarCampos();
                         return;

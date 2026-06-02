@@ -14,7 +14,7 @@ public interface AdministradorDAO {
     
     Administrador obtenerAdministrador(int id) throws Exception;
     
-    boolean agregarAdministardor(Administrador adminAux) throws Exception;
+    boolean agregarAdministrador(Administrador adminAux) throws Exception;
     
-    boolean modificarAdministardor(Administrador adminAux) throws Exception;
+    boolean modificarAdministrador(Administrador adminAux) throws Exception;
 }

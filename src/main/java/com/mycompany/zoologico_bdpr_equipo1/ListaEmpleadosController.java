@@ -105,7 +105,7 @@ public class ListaEmpleadosController implements Initializable {
                     Empleado empleado = getTableView().getItems().get(getIndex());
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("listaTurnos.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaTurnos.fxml"));
                         Parent vista = loader.load();
 
                         // Obtener controller
@@ -147,7 +147,7 @@ public class ListaEmpleadosController implements Initializable {
                     Empleado empleado = getTableView().getItems().get(getIndex());
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("listaAnimales.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaAnimales.fxml"));
                         Parent vista = loader.load();
 
                         // Obtener controller
@@ -205,7 +205,7 @@ public class ListaEmpleadosController implements Initializable {
                     Empleado empleado = getTableView().getItems().get(getIndex());
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("listaEspecialidades.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaEspecialidades.fxml"));
                         Parent vista = loader.load();
 
                         // Obtener controller
@@ -260,7 +260,7 @@ public class ListaEmpleadosController implements Initializable {
                     Empleado empleado = getTableView().getItems().get(getIndex());
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("listaHabitats.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaHabitats.fxml"));
                         Parent vista = loader.load();
 
                         // Obtener controller

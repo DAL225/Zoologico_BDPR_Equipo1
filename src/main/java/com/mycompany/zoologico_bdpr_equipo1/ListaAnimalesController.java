@@ -127,7 +127,7 @@ public class ListaAnimalesController {
                     } else {
                         
                         try {//abre la ventana de recomendaciones del animal cuyo boton ver se le de clic
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("listaRecomendaciones.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaRecomendaciones.fxml"));
                             Parent vista = loader.load();
 
                             // Obtener controller
@@ -181,7 +181,7 @@ public class ListaAnimalesController {
                     } else {
 
                         try {//abre la ventana de tratamientos del animal cuyo boton ver se le de clic
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("listaTratamientos.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaTratamientos.fxml"));
                             Parent vista = loader.load();
 
                             // Obtener controller
