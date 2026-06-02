@@ -21,9 +21,10 @@ public interface HabitatDAO {
     
     Integer obtenerIdDisponible() throws Exception;
     
+    boolean agregarHabitat(Habitat habitatAux) throws Exception;
+    
     boolean modificarDatos(Habitat habitatAux) throws Exception;
     
     boolean eliminarHabitat(int idHabitat) throws Exception;
     
-    List<Habitat> obtenerHabitatsPorEmpleado(int idEmpleado) throws Exception;
 }

@@ -144,7 +144,6 @@ public class ModificarAnimalController implements Initializable {
         animalActual.setTratamientos(this.tratamientos);
 
         try {
-            
             if (animalDao.modificarDatos(animalActual)) { 
                 mostrarAlerta("Éxito", "Elemento modificado correctamente", Alert.AlertType.INFORMATION);
                 limpiarCamposModificar();

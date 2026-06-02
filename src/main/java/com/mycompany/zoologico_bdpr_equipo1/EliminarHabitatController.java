@@ -4,8 +4,10 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Dao.AnimalDAO;
 import Modelo.Dao.HabitatDAO;
 import Modelo.Habitat;
+import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.HabitatDAOImpl;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,6 +44,8 @@ public class EliminarHabitatController implements Initializable {
     private Habitat habitatActual;
 
     private HabitatDAO habitatDao;
+    
+    private AnimalDAO animalDao;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -95,17 +99,18 @@ public class EliminarHabitatController implements Initializable {
         try {
 
             if (habitatDao.eliminarHabitat(habitatActual.getId())) {
+                animalDao = new AnimalDAOImpl();
+                animalDao.desasignarHabitat(habitatActual.getId());
 
                 mostrarAlerta("Éxito","Habitat eliminado correctamente",Alert.AlertType.INFORMATION);
 
                 limpiarCamposEliminar();
                 return;
             }
-
             mostrarAlerta("Error","No se pudo eliminar el habitat",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

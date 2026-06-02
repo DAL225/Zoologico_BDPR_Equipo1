@@ -23,4 +23,6 @@ public interface EmpleadoDAO {
     
     boolean modificarDatos(Empleado empleadoAux) throws Exception;
     
+    String obtenerTipoEmpleado(int id) throws Exception;
+    
 }

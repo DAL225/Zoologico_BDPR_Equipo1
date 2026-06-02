@@ -4,6 +4,8 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Dao.TurnoDAO;
+import Modelo.Impl.TurnoDAOImpl;
 import Modelo.Turno;
 import java.net.URL;
 import java.time.LocalDate;
@@ -31,6 +33,8 @@ public class RegistrarTurnoController implements Initializable {
 
     @FXML
     private Button btnRegistrarTurno;
+    
+    private TurnoDAO turnoDao;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -79,15 +83,22 @@ public class RegistrarTurnoController implements Initializable {
                 break;
         }
 
-        Turno turno = new Turno(
-                fecha,
-                horaInicio,
-                horaFin
-        );
+        try{
+            Turno turnoAux = new Turno();
+            turnoAux.setFecha(fecha);
+            turnoAux.setHoraInicio(horaInicio);
+            turnoAux.setHoraFin(horaFin);
+        
+            if (turnoDao.agregarTurno(turnoAux)) {
+                mostrarAlerta("Registro", "Elemento registrado correctamente.", Alert.AlertType.INFORMATION);
+                this.limpiarCampos();
+                return;
+            }
+            mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
 
-        System.out.println(turno);
-
-        // Aquí llamarías al DAO para registrar el turno
+        } catch (Exception e) {
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.INFORMATION);
+        }
     }
 
     /**
@@ -103,5 +114,20 @@ public class RegistrarTurnoController implements Initializable {
         a.setHeaderText(null);
         a.setContentText(mensaje);
         a.showAndWait();
+    }
+    
+    /**
+     * Limpia el componente de fecha (DatePicker) y restablece la selección del
+     * horario.
+     */
+    private void limpiarCampos() {
+        // 1. Limpiar el DatePicker
+        chkFecha.setValue(null);
+        if (chkFecha.getEditor() != null) {
+            chkFecha.getEditor().clear();
+        }
+
+        // 2. Quitar la selección del ChoiceBox de horarios
+        chkHorario.getSelectionModel().clearSelection();
     }
 }

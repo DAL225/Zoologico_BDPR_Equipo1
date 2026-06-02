@@ -6,7 +6,12 @@ package com.mycompany.zoologico_bdpr_equipo1;
 
 import Modelo.Animal;
 import Modelo.Dao.AnimalDAO;
+import Modelo.Dao.CuidadorDAO;
+import Modelo.Dao.EmpleadoDAO;
+import Modelo.Dao.IntendenteDAO;
 import Modelo.Impl.AnimalDAOImpl;
+import Modelo.Impl.CuidadorDAOImpl;
+import Modelo.Impl.IntendenteDAOImpl;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -40,8 +45,10 @@ public class EliminarAnimalController implements Initializable {
     private TextArea txtDatos;
 
     private Animal animalActual;
-
     private AnimalDAO animalDao;
+    
+    private IntendenteDAO intendenteDao;
+    private CuidadorDAO cuidadorDao;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -65,7 +72,7 @@ public class EliminarAnimalController implements Initializable {
             animalActual = animalDao.obtenerAnimal(id);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error","Error al cargar los datos",Alert.AlertType.ERROR);
             return;
         }
@@ -92,20 +99,17 @@ public class EliminarAnimalController implements Initializable {
 
         if (animalActual == null) {
 
-            mostrarAlerta(
-                    "Error",
-                    "Debe buscar un animal primero",
-                    Alert.AlertType.WARNING
-            );
+            mostrarAlerta("Error","Debe buscar un animal primero",Alert.AlertType.WARNING);
             return;
         }
-
         try {
-
+            intendenteDao = new IntendenteDAOImpl();
+            cuidadorDao = new CuidadorDAOImpl();
+            
             if (animalDao.eliminarAnimal(animalActual.getId())) {
-
+                intendenteDao.eliminarIdHabitat(animalActual.getId());
+                cuidadorDao.eliminarIdAnimal(animalActual.getId());
                 mostrarAlerta("Éxito","Animal eliminado correctamente",Alert.AlertType.INFORMATION);
-
                 limpiarCamposEliminar();
                 return;
             }

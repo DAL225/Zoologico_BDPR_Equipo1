@@ -4,6 +4,7 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Administrador;
 import Modelo.Animal;
 import Modelo.Cuidador;
 import Modelo.Dao.AnimalDAO;
@@ -12,8 +13,10 @@ import Modelo.Empleado;
 import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.EmpleadoDAOImpl;
 import Modelo.Intendente;
+import Modelo.Turno;
 import Modelo.Veterinario;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -311,13 +314,13 @@ public class ListaEmpleadosController implements Initializable {
             empleadoDao = new EmpleadoDAOImpl();
             
             lista.addAll(empleadoDao.obtenerTodosEmpleados());
-            
             if (lista == null || lista.isEmpty()){
                 mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
                 return;
             }
         } catch (Exception e) {
-        mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
+            e.printStackTrace();
+            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
     }
         
         tblEmpleados.setItems(lista);

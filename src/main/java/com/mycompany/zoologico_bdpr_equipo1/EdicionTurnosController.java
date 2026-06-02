@@ -4,6 +4,8 @@
  */
 package com.mycompany.zoologico_bdpr_equipo1;
 
+import Modelo.Dao.TurnoDAO;
+import Modelo.Impl.TurnoDAOImpl;
 import Modelo.Turno;
 import java.net.URL;
 import java.time.LocalDate;
@@ -57,6 +59,8 @@ public class EdicionTurnosController implements Initializable {
     private Button btnAgregar;
 
     private ObservableList<Turno> listaTurnos;
+    
+    private TurnoDAO turnoDao;
 
     /**
      * Permite asignar la lista principal de turnos.
@@ -101,12 +105,29 @@ public class EdicionTurnosController implements Initializable {
     @FXML
     private void agregarTurno(ActionEvent event) {
 
-        int idTurno = spnIdTurno.getValue();
-
-        // Aquí posteriormente buscarás el turno en la BD
-        // y lo agregarás a la lista.
-
-        System.out.println("Agregar turno con id: " + idTurno);
+        int idAgregar = spnIdTurno.getValue();
+        
+        if(listaTurnos != null && !listaTurnos.isEmpty()){
+            for(Turno turnoAux : listaTurnos){
+                if(idAgregar == turnoAux.getId()){
+                    mostrarAlerta("Existente", "El elemento ya esta agregado", Alert.AlertType.INFORMATION);
+                    return;
+                }
+            }
+        }
+        try{
+            turnoDao = new TurnoDAOImpl();
+            Turno TurnoAux2 = turnoDao.obtenerTurno(idAgregar);
+            
+            if(TurnoAux2 != null){
+                this.listaTurnos.add(TurnoAux2);
+                mostrarAlerta("Exito", "Elemento agregado correctamente", Alert.AlertType.INFORMATION);
+            }
+            mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
+        }catch(Exception e){
+            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     /**

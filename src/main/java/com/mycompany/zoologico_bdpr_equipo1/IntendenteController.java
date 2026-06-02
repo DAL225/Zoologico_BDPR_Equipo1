@@ -6,9 +6,12 @@ package com.mycompany.zoologico_bdpr_equipo1;
 
 import Modelo.Habitat;
 import Modelo.Dao.HabitatDAO;
+import Modelo.Dao.IntendenteDAO;
 import Modelo.Impl.HabitatDAOImpl;
+import Modelo.Impl.IntendenteDAOImpl;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,6 +60,7 @@ public class IntendenteController implements Initializable {
     private ObservableList<Habitat> listaHabitats;
 
     private int idEmpleado; // 👈 aquí guardas el id del intendente
+    private IntendenteDAO intendenteDao;
 
     /**
      * Método para recibir el id del empleado logueado.
@@ -80,6 +84,7 @@ public class IntendenteController implements Initializable {
         colClima.setCellValueFactory(new PropertyValueFactory<>("clima"));
         colNivelLimpieza.setCellValueFactory(new PropertyValueFactory<>("nivelLimpieza"));
         colCapacidad.setCellValueFactory(new PropertyValueFactory<>("capacidadAnimales"));
+        
         tblHabitats.setItems(listaHabitats);
     }
 
@@ -89,14 +94,22 @@ public class IntendenteController implements Initializable {
     private void cargarHabitats() {
 
         try {
+            intendenteDao = new IntendenteDAOImpl();
             habitatDao = new HabitatDAOImpl();
             listaHabitats.clear();
             
-            listaHabitats.addAll(habitatDao.obtenerHabitatsPorEmpleado(idEmpleado));
+            List<Integer> listaIds = intendenteDao.obtenerIdsHabitats(idEmpleado);
+            
+            if(listaIds == null || listaIds.isEmpty()){
+                mostrarAlerta("Error", "No hay habitats para mostrar",Alert.AlertType.ERROR);
+                return;
+            }
+            List<Habitat> listaHabitats = habitatDao.obtenerHabitats(listaIds);
+            
+            listaHabitats.addAll(listaHabitats);
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudieron cargar los hábitats",
-                    Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "No se pudieron cargar los hábitats",Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }

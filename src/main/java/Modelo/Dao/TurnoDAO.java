@@ -17,7 +17,9 @@ public interface TurnoDAO {
     
     Turno obtenerTurno(int id) throws Exception;
     
-    boolean modificarDatos(Turno turno) throws Exception;
+    boolean modificarTurno(Turno turno) throws Exception;
     
     boolean eliminarTurno(int idTurno) throws Exception;
+    
+    boolean agregarTurno(Turno turnoAux) throws Exception;
 }

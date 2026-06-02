@@ -115,10 +115,30 @@ public class EdicionAnimalesController implements Initializable {
 
     @FXML
     private void agregarAnimal(ActionEvent event) {
+        int idAgregar = spnIdAnimal.getValue();
         
-        // 1. Validar duplicados/numero
-        // 2. Buscar el animal desde DAO
-        // 3. Agregarlo a la lista
+        if(listaIdAnimales != null && !listaIdAnimales.isEmpty()){
+            for(int idAux : listaIdAnimales){
+                if(idAgregar == idAux){
+                    mostrarAlerta("Existente", "El elemento ya esta agregado", Alert.AlertType.INFORMATION);
+                    return;
+                }
+            }
+        }
+        try{
+            animalDao = new AnimalDAOImpl();
+            Animal animalAux = animalDao.obtenerAnimal(idAgregar);
+            
+            if(animalAux != null){
+                this.listaIdAnimales.add(idAgregar);
+                mostrarAlerta("Exito", "Elemento agregado correctamente", Alert.AlertType.INFORMATION);
+                cargarDatos();
+            }
+            mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
+        }catch(Exception e){
+            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     /**
