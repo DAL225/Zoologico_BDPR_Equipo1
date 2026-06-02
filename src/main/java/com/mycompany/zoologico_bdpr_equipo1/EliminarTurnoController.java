@@ -105,7 +105,7 @@ public class EliminarTurnoController implements Initializable {
             mostrarAlerta("Error","No se pudo eliminar el turno",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

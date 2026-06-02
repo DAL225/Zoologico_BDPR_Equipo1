@@ -208,7 +208,7 @@ public class EdicionHabitatsController implements Initializable {
             listaHabitats.addAll(habitatDao.obtenerHabitats(listaidHabitats));
             
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             this.mostrarAlerta("Error", "Error al obtener datos", Alert.AlertType.NONE);
         }
         

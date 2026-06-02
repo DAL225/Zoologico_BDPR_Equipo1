@@ -133,7 +133,7 @@ public class RegistrarAnimalController implements Initializable {
             animalAux.setRecomendacionesCuidado(listaRecomendaciones);
             animalAux.setTratamientos(listaTratamientos);
             
-            if (habitatDao.agregarHabitat(habitatAux)) {
+            if (animalDao.agregarAnimal(animalAux)) {
                 mostrarAlerta("Registro", "Elemento registrado correctamente.", Alert.AlertType.INFORMATION);
                 this.limpiarCamposAgregar();
                 return;

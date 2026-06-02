@@ -64,7 +64,7 @@ public class EliminarEmpleadoController implements Initializable {
             empleadoActual = empleadoDao.obtenerEmpleado(id);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error","Error al cargar los datos",Alert.AlertType.ERROR);
             return;
         }
@@ -104,7 +104,7 @@ public class EliminarEmpleadoController implements Initializable {
             mostrarAlerta("Error","No se pudo eliminar el empleado",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

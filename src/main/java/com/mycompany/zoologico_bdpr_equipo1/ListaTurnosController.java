@@ -94,6 +94,7 @@ public class ListaTurnosController implements Initializable {
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
         }
 

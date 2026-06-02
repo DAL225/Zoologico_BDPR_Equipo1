@@ -195,7 +195,7 @@ public class EdicionAnimalesController implements Initializable {
             listaAnimales.addAll(animalDao.obtenerAnimales(listaIdAnimales));
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             this.mostrarAlerta("Error", "Error al obtener datos", Alert.AlertType.NONE);
         }
 

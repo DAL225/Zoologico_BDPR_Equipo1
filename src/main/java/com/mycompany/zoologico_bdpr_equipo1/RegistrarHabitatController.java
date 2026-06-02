@@ -109,6 +109,7 @@ public class RegistrarHabitatController implements Initializable {
             mostrarAlerta("Aviso", "Fracaso al registrar", Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
+            e.printStackTrace();
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.INFORMATION);
         }
 

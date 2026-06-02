@@ -9,9 +9,11 @@ import Modelo.Dao.AnimalDAO;
 import Modelo.Dao.CuidadorDAO;
 import Modelo.Dao.EmpleadoDAO;
 import Modelo.Dao.IntendenteDAO;
+import Modelo.Dao.VeterinarioDAO;
 import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.CuidadorDAOImpl;
 import Modelo.Impl.IntendenteDAOImpl;
+import Modelo.Impl.VeterinarioDAOImpl;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -47,7 +49,7 @@ public class EliminarAnimalController implements Initializable {
     private Animal animalActual;
     private AnimalDAO animalDao;
     
-    private IntendenteDAO intendenteDao;
+    private VeterinarioDAO veterinarioDao;
     private CuidadorDAO cuidadorDao;
 
     @Override
@@ -85,12 +87,7 @@ public class EliminarAnimalController implements Initializable {
             subPnlCamposElim.setVisible(true);
 
         } else {
-
-            mostrarAlerta(
-                    "Error",
-                    "No existe un animal con ese ID",
-                    Alert.AlertType.ERROR
-            );
+            mostrarAlerta("Error","No existe un animal con ese ID",Alert.AlertType.ERROR);
         }
     }
 
@@ -103,11 +100,11 @@ public class EliminarAnimalController implements Initializable {
             return;
         }
         try {
-            intendenteDao = new IntendenteDAOImpl();
+            veterinarioDao = new VeterinarioDAOImpl();
             cuidadorDao = new CuidadorDAOImpl();
             
             if (animalDao.eliminarAnimal(animalActual.getId())) {
-                intendenteDao.eliminarIdHabitat(animalActual.getId());
+                veterinarioDao.eliminarIdAnimal(animalActual.getId());
                 cuidadorDao.eliminarIdAnimal(animalActual.getId());
                 mostrarAlerta("Éxito","Animal eliminado correctamente",Alert.AlertType.INFORMATION);
                 limpiarCamposEliminar();
@@ -117,7 +114,7 @@ public class EliminarAnimalController implements Initializable {
             mostrarAlerta("Error","No se pudo eliminar el animal",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

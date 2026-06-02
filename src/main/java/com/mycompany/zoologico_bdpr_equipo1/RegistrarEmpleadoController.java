@@ -347,6 +347,7 @@ public class RegistrarEmpleadoController implements Initializable {
             
             
         }catch(Exception e){
+            e.printStackTrace();
             mostrarAlerta("Error", "Ocurrio un error", Alert.AlertType.INFORMATION);
             System.out.println(e.getMessage());
         }

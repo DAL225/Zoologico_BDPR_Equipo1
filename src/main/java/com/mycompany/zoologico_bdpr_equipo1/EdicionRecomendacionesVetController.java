@@ -148,8 +148,7 @@ public class EdicionRecomendacionesVetController implements Initializable {
             }
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar cambios",
-                    Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al guardar cambios",Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }

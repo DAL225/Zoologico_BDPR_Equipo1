@@ -92,12 +92,7 @@ public class EdicionRecomendacionesController implements Initializable {
 
         if (nuevaRecomendacion.isEmpty()) {
 
-            mostrarAlerta(
-                    "Campo vacio",
-                    "Ingrese una recomendacion",
-                    Alert.AlertType.WARNING
-            );
-
+            mostrarAlerta("Campo vacio","Ingrese una recomendacion",Alert.AlertType.WARNING);
             return;
         }
 
@@ -105,10 +100,7 @@ public class EdicionRecomendacionesController implements Initializable {
 
         txtNuevaRecomendacion.clear();
 
-        System.out.println(
-                "Recomendacion agregada: "
-                + nuevaRecomendacion
-        );
+        System.out.println("Recomendacion agregada: " + nuevaRecomendacion);
     }
 
     /**

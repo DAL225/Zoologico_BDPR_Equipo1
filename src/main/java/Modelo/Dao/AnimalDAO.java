@@ -13,6 +13,8 @@ import java.util.List;
  */
 public interface AnimalDAO {
     
+    boolean agregarAnimal(Animal animalAux) throws Exception;
+    
     Animal obtenerAnimal(int id) throws Exception;
     
     List<Animal> obtenerAnimales(List<Integer> ids) throws Exception;

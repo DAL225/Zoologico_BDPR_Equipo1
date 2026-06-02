@@ -150,4 +150,9 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
     public boolean desasignarHabitat(int idHabitat) throws Exception {
         return false;
     }
+
+    @Override
+    public boolean agregarAnimal(Animal animalAux) throws Exception {
+        return false;
+    }
 }

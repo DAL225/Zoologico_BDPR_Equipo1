@@ -94,13 +94,11 @@ public class EdicionTratamientosVetController implements Initializable {
             animalActual = animalDao.obtenerAnimal(idAnimal);
 
             if (animalActual != null && animalActual.getTratamientos() != null) {
-
                 listaTratamientos.setAll(animalActual.getTratamientos());
             }
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo cargar el animal",
-                    Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "No se pudo cargar el animal",Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }
@@ -116,8 +114,7 @@ public class EdicionTratamientosVetController implements Initializable {
         String texto = txtNuevoTratamiento.getText().trim();
 
         if (texto.isEmpty()) {
-            mostrarAlerta("Error", "Escribe un tratamiento",
-                    Alert.AlertType.WARNING);
+            mostrarAlerta("Error", "Escribe un tratamiento",Alert.AlertType.WARNING);
             return;
         }
 
@@ -134,22 +131,16 @@ public class EdicionTratamientosVetController implements Initializable {
         try {
             animalDao = new AnimalDAOImpl();
 
-            boolean ok = animalDao.modificarTratamientos(
-                    idAnimal,
-                    listaTratamientos
-            );
+            boolean ok = animalDao.modificarTratamientos(idAnimal,listaTratamientos);
 
             if (ok) {
-                mostrarAlerta("Éxito", "Tratamientos actualizados correctamente",
-                        Alert.AlertType.INFORMATION);
+                mostrarAlerta("Éxito", "Tratamientos actualizados correctamente",Alert.AlertType.INFORMATION);
             } else {
-                mostrarAlerta("Error", "No se pudieron guardar los cambios",
-                        Alert.AlertType.ERROR);
+                mostrarAlerta("Error", "No se pudieron guardar los cambios",Alert.AlertType.ERROR);
             }
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "Error al guardar cambios",
-                    Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al guardar cambios",Alert.AlertType.ERROR);
             e.printStackTrace();
         }
     }

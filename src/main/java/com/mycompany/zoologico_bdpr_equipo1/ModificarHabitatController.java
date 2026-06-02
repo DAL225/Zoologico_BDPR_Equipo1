@@ -92,6 +92,7 @@ public class ModificarHabitatController implements Initializable {
             habitatActual = habitatDao.obtenerHabitat(id);
 
         } catch (Exception e) {
+            e.printStackTrace();
             mostrarAlerta("Error","Error al cargar los datos",Alert.AlertType.ERROR);
             return;
         }
@@ -108,7 +109,6 @@ public class ModificarHabitatController implements Initializable {
             subPnlCamposMod.setVisible(true);
 
         } else {
-
             mostrarAlerta("Error","No existe un hábitat con ese ID",Alert.AlertType.ERROR);
         }
     }
@@ -138,6 +138,7 @@ public class ModificarHabitatController implements Initializable {
             mostrarAlerta("Fracaso","No se pudo modificar el hábitat",Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
+            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

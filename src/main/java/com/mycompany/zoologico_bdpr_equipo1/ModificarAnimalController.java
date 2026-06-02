@@ -153,6 +153,7 @@ public class ModificarAnimalController implements Initializable {
             mostrarAlerta("Fracaso", "El elemento no se pudo modificar", Alert.AlertType.INFORMATION);
 
         }catch (Exception e) {
+            e.printStackTrace();
             mostrarAlerta("Error ", e.getMessage(), Alert.AlertType.ERROR);
         }
 

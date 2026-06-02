@@ -98,12 +98,8 @@ public class ModificarTurnoController implements Initializable {
             turnoActual = turnoDao.obtenerTurno(id);
 
         } catch (Exception e) {
-
-            mostrarAlerta(
-                    "Error",
-                    "Error al cargar los datos",
-                    Alert.AlertType.ERROR
-            );
+            e.printStackTrace();
+            mostrarAlerta("Error","Error al cargar los datos",Alert.AlertType.ERROR);
             return;
         }
 
@@ -194,7 +190,7 @@ public class ModificarTurnoController implements Initializable {
             mostrarAlerta("Fracaso", "No se pudo modificar el turno", Alert.AlertType.WARNING);
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }

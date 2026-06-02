@@ -82,7 +82,6 @@ public class EliminarHabitatController implements Initializable {
             subPnlCamposElim.setVisible(true);
 
         } else {
-
             mostrarAlerta("Error","No existe un habitat con ese ID",Alert.AlertType.ERROR);
         }
     }
