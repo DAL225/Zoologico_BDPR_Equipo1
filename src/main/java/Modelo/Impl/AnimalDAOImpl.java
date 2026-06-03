@@ -6,8 +6,13 @@ package Modelo.Impl;
 
 import Modelo.Animal;
 import Modelo.Dao.AnimalDAO;
+import com.mongodb.client.FindIterable;
+import static com.mongodb.client.model.Sorts.*;
+import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -15,11 +20,14 @@ import java.util.List;
  */
 public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
     
+    private BaseDAOMongo DAO;
+    
     /**
      * Constructor de la clase
      * @throws Exception Posible Excepcion
      */
     public AnimalDAOImpl() throws Exception {
+        this.DAO = new BaseDAOMongo();
     }
     
     /**
@@ -30,8 +38,22 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public Animal obtenerAnimal(int id) throws Exception {
-        Animal animal = null;
-        
+        Document doc = this.DAO.obtenerDocumento(id, this.DAO.colAnimales);
+        Animal animal = new Animal();
+        animal.setId(id);
+        animal.setNombreCientifico(doc.getString("nombre_cientifico"));
+        animal.setEspecie(doc.getString("especie"));
+        if (doc.getInteger("id_habitat") != null){
+            animal.setIdHabitat(doc.getInteger("id_habitat"));
+        }
+        animal.setNombreComun(doc.getString("nombre_común"));
+        if (doc.getInteger("edad") != null){
+            animal.setEdad(doc.getInteger("edad"));
+        }
+        animal.setSexo(doc.getString("sexo"));
+        animal.setEstadoSalud(doc.getString("estado_salud"));
+        animal.setRecomendacionesCuidado(doc.getList("recomendaciones_cuidado", String.class));
+        animal.setTratamientos(doc.getList("tratamientos", String.class));
         //Logica obtencion habitat/mongo
         
         return animal;
@@ -48,7 +70,6 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public List<Animal> obtenerAnimales(List<Integer> ids) throws Exception {
-
         List<Animal> listaAnimales = new ArrayList<>();
         
         //logica find/mongo where
@@ -65,7 +86,11 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
     public List<Animal> obtenerTodosAnimales() throws Exception {
 
         List<Animal> listaAnimales = new ArrayList<>();
-        
+        FindIterable<Document> Aux = DAO.obtenerDocumentos(colAnimales);
+        for (Document doc : Aux){
+            Animal animalAux = this.obtenerAnimal(doc.getInteger("_id"));
+            listaAnimales.add(animalAux);
+        }
         //logica find/mongo
 
         return listaAnimales;
@@ -80,8 +105,19 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public Integer obtenerIdDisponible() throws Exception {
-        //aqui algo de orden descending en _id asi creo obtener el max y sumar 1
-        return 0;
+        Document doc = DAO.colAnimales.find().sort(descending("_id")).first();
+        if (doc != null){
+            if (doc.getObjectId("_id") != null){
+                ObjectId id = doc.getObjectId("_id");
+                String idS = id.toString();
+                int idInt = parseInt(idS);
+                return idInt;
+            } else {
+                return 1;
+            }
+        } else {
+            return 1;
+        }
     }
     
     /**
@@ -153,6 +189,38 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
 
     @Override
     public boolean agregarAnimal(Animal animalAux) throws Exception {
-        return false;
+        Document doc = DAO.nuevoConInt("_id", animalAux.getId());
+        if (animalAux.getNombreCientifico() != null){
+            doc = DAO.appendString(doc, "nombre_cientifico", animalAux.getNombreCientifico());
+        }
+        if (animalAux.getEspecie() != null){
+            doc = DAO.appendString(doc, "epecie", animalAux.getEspecie());
+        }
+        if ((Integer) animalAux.getIdHabitat() != null){
+            doc = DAO.appendInt(doc, "id_habitat", animalAux.getIdHabitat());
+        }
+        if (animalAux.getNombreComun() != null){
+            doc = DAO.appendString(doc, "nombre_común", animalAux.getNombreComun());
+        }
+        if ((Integer) animalAux.getEdad() != null){
+            doc = DAO.appendInt(doc, "edad", animalAux.getEdad());
+        }
+        if (animalAux.getSexo() != null){
+            doc = DAO.appendString(doc, "sexo", animalAux.getSexo());
+        }
+        if (animalAux.getEstadoSalud() != null){
+            doc = DAO.appendString(doc, "estado_salud", animalAux.getEstadoSalud());
+        }
+        if (!animalAux.getRecomendacionesCuidado().isEmpty()){
+            doc = DAO.appendArrayString(doc, "recomendaciones_cuidado", (ArrayList<String>) animalAux.getRecomendacionesCuidado());
+        }
+        if (!animalAux.getTratamientos().isEmpty()){
+            doc = DAO.appendArrayString(doc, "tratamientos", (ArrayList<String>) animalAux.getTratamientos());
+        }
+        if (DAO.insertarUno(doc, colAnimales)){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
