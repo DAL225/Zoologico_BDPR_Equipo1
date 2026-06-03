@@ -86,8 +86,6 @@ public class EdicionTurnosController implements Initializable {
         spnIdTurno.setValueFactory(valueFactory);
 
         configurarColumnaEliminar();
-
-        cargarDatos();
     }
 
     /**
@@ -117,11 +115,13 @@ public class EdicionTurnosController implements Initializable {
         }
         try{
             turnoDao = new TurnoDAOImpl();
-            Turno TurnoAux2 = turnoDao.obtenerTurno(idAgregar);
+            Turno turnoAux2 = turnoDao.obtenerTurno(idAgregar);
             
-            if(TurnoAux2 != null){
-                this.listaTurnos.add(TurnoAux2);
+            if(turnoAux2 != null){
+                this.listaTurnos.add(turnoAux2);
                 mostrarAlerta("Exito", "Elemento agregado correctamente", Alert.AlertType.INFORMATION);
+                cargarDatos();
+                return;
             }
             mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
         }catch(Exception e){

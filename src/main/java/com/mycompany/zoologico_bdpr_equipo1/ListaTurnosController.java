@@ -54,6 +54,7 @@ public class ListaTurnosController implements Initializable {
     public void setListaTurnos(ObservableList<Turno> listaTurnos) {
         this.listaTurnos = listaTurnos;
         this.cargarDatos();
+        System.out.println("Turnos recibidos: " + listaTurnos.size());
     }
 
     @Override
@@ -83,12 +84,16 @@ public class ListaTurnosController implements Initializable {
             turnoDao = new TurnoDAOImpl();
             if (listaTurnos == null) {
                 lista.addAll(turnoDao.obtenerTodosTurnos());
-
+                System.out.println("todos");
             } else {
+                System.out.println("propios");
                 lista.addAll(listaTurnos);
+                System.out.println("despues propios");
             }
-            
-            if (lista == null || lista.isEmpty()) {
+
+            tblTurnos.setItems(lista);
+
+            if (lista.isEmpty()) {
                 mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
                 return;
             }

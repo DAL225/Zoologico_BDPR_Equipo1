@@ -148,30 +148,33 @@ public class ModificarEmpleadoController implements Initializable {
             if (empleadoActual instanceof Administrador) {
                 Administrador admin = (Administrador) empleadoActual;
                 stckPane.setVisible(false);
+                
+                if (admin.getTurnos() != null) listaTurnos.addAll(admin.getTurnos());
 
             }else if (empleadoActual instanceof Veterinario) {
                 Veterinario vet = (Veterinario) empleadoActual;
                 stckPane.setVisible(true);
                 subPnlVeterinario.setVisible(true);
 
-                listaIdAnimales.clear();
-                listaIdAnimales.addAll(vet.getIdsAnimales());
+                if (vet.getTurnos() != null) listaTurnos.addAll(vet.getTurnos());
+                if (vet.getIdsAnimales() != null) listaIdAnimales.addAll(vet.getIdsAnimales());
+                if (vet.getEspecialidades() != null) listaEspecialidades.addAll(vet.getEspecialidades());
 
             } else if (empleadoActual instanceof Cuidador) {
                 Cuidador cui = (Cuidador) empleadoActual;
                 stckPane.setVisible(true);
                 subPnlCuidador.setVisible(true);
-
-                listaIdAnimales.clear();
-                listaIdAnimales.addAll(cui.getIdsAnimales());
+                
+                if (cui.getTurnos() != null) listaTurnos.addAll(cui.getTurnos());
+                if (cui.getIdsAnimales() != null) listaIdAnimales.addAll(cui.getIdsAnimales());
 
             } else if (empleadoActual instanceof Intendente) {
                 Intendente intd = (Intendente) empleadoActual;
                 stckPane.setVisible(true);
                 subPnlIntendente.setVisible(true);
 
-                listaIdHabitats.clear();
-                listaIdHabitats.addAll(intd.getIdsHabitats());
+                if (intd.getTurnos() != null) listaTurnos.addAll(intd.getTurnos());
+                if (intd.getIdsHabitats() != null) listaIdHabitats.addAll(intd.getIdsHabitats());
             }
 
         } catch (Exception e) {
@@ -259,7 +262,7 @@ public class ModificarEmpleadoController implements Initializable {
     private void modificarTurnos(ActionEvent event) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionTurnos.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionTurnos.fxml"));
             Parent vista = loader.load();
 
             EdicionTurnosController controller = loader.getController();
@@ -281,7 +284,7 @@ public class ModificarEmpleadoController implements Initializable {
     private void modificarAnimales(ActionEvent event) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionAnimales.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionAnimales.fxml"));
             Parent vista = loader.load();
 
             EdicionAnimalesController controller = loader.getController();
@@ -303,7 +306,7 @@ public class ModificarEmpleadoController implements Initializable {
     private void modificarEspecialidades(ActionEvent event) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionEspecialidades.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionEspecialidades.fxml"));
             Parent vista = loader.load();
 
             EdicionEspecialidadesController controller = loader.getController();

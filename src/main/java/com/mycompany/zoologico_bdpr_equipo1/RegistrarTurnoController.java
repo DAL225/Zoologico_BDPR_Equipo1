@@ -10,6 +10,7 @@ import Modelo.Turno;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -84,6 +85,8 @@ public class RegistrarTurnoController implements Initializable {
         }
 
         try{
+            turnoDao = new TurnoDAOImpl();
+            
             Turno turnoAux = new Turno();
             turnoAux.setFecha(fecha);
             turnoAux.setHoraInicio(horaInicio);

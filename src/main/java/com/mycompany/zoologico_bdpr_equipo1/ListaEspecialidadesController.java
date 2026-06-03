@@ -42,9 +42,7 @@ public class ListaEspecialidadesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        colEspecialidad.setCellValueFactory(
-                new PropertyValueFactory<>("value")
-        );
+        colEspecialidad.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
 
         cargarDatos();
     }

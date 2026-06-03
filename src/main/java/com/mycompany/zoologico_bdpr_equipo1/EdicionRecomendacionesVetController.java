@@ -75,9 +75,7 @@ public class EdicionRecomendacionesVetController implements Initializable {
 
         listaRecomendaciones = FXCollections.observableArrayList();
 
-        colRecomendacion.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue())
-        );
+        colRecomendacion.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
 
         tblRecomendaciones.setItems(listaRecomendaciones);
 
@@ -94,10 +92,11 @@ public class EdicionRecomendacionesVetController implements Initializable {
             animalActual = animalDao.obtenerAnimal(idAnimal);
 
             if (animalActual != null && animalActual.getRecomendacionesCuidado() != null) {
-
                 listaRecomendaciones.setAll(animalActual.getRecomendacionesCuidado());
+                return;
             }
-
+            
+            mostrarAlerta("Vacio", "No hay recomendaciones para mostrar", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo cargar el animal", Alert.AlertType.ERROR);
             e.printStackTrace();

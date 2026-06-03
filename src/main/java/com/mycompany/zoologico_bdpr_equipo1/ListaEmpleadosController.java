@@ -9,14 +9,17 @@ import Modelo.Animal;
 import Modelo.Cuidador;
 import Modelo.Dao.AnimalDAO;
 import Modelo.Dao.EmpleadoDAO;
+import Modelo.Dao.TurnoDAO;
 import Modelo.Empleado;
 import Modelo.Impl.AnimalDAOImpl;
 import Modelo.Impl.EmpleadoDAOImpl;
+import Modelo.Impl.TurnoDAOImpl;
 import Modelo.Intendente;
 import Modelo.Turno;
 import Modelo.Veterinario;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -71,6 +74,8 @@ public class ListaEmpleadosController implements Initializable {
     EmpleadoDAO empleadoDao;
     
     AnimalDAO animalDao;
+    
+    TurnoDAO turnoDao;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -108,11 +113,12 @@ public class ListaEmpleadosController implements Initializable {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/listaTurnos.fxml"));
                         Parent vista = loader.load();
 
+                        
                         // Obtener controller
                         ListaTurnosController controller = loader.getController();
 
                         // Pasar datos
-                        controller.setListaTurnos(FXCollections.observableList(empleado.getTurnos()));
+                        controller.setListaTurnos(FXCollections.observableList(turnosCompletosEmpleado(empleado.getTurnos())));
 
                         Stage stage = new Stage();
                         stage.setScene(new Scene(vista));
@@ -339,5 +345,27 @@ public class ListaEmpleadosController implements Initializable {
         a.setHeaderText(null);
         a.setContentText(mensaje);
         a.showAndWait();
+    }
+    
+    /**
+     * Devuelve la lista con turnos completos ya que la actual solo tiene los id, por complicaciones con Dao
+     * @param turnos
+     * @return 
+     */
+    private List<Turno> turnosCompletosEmpleado(List<Turno> turnos) {
+        List<Turno> listaAux = new ArrayList<>();
+        try {
+            turnoDao = new TurnoDAOImpl();
+            if (!turnos.isEmpty()) {
+                for (Turno turnoAux : turnos) {
+                    Turno turnoAlterno = turnoDao.obtenerTurno(turnoAux.getId());
+                    listaAux.add(turnoAlterno);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return listaAux;
     }
 }

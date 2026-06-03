@@ -75,9 +75,7 @@ public class EdicionTratamientosVetController implements Initializable {
         
         listaTratamientos = FXCollections.observableArrayList();
 
-        colTratamiento.setCellValueFactory(data ->
-                new SimpleStringProperty(data.getValue())
-        );
+        colTratamiento.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
 
         tblTratamientos.setItems(listaTratamientos);
 
@@ -95,8 +93,10 @@ public class EdicionTratamientosVetController implements Initializable {
 
             if (animalActual != null && animalActual.getTratamientos() != null) {
                 listaTratamientos.setAll(animalActual.getTratamientos());
+                return;
             }
-
+            
+            mostrarAlerta("Vacio", "No hay tratamientos para mostrar", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo cargar el animal",Alert.AlertType.ERROR);
             e.printStackTrace();

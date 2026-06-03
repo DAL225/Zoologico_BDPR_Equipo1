@@ -41,9 +41,7 @@ public class ListaTratamientosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        colTratamiento.setCellValueFactory( new PropertyValueFactory<>("value"));
-
-        cargarDatos();
+        colTratamiento.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
     }
 
     @FXML

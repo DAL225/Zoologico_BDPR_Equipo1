@@ -59,12 +59,9 @@ public class EdicionTratamientosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         // La celda mostrará directamente el String
-        colTratamiento.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue()));
+        colTratamiento.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
 
         configurarColumnaEliminar();
-
-        cargarDatos();
     }
 
     /**
@@ -85,11 +82,7 @@ public class EdicionTratamientosController implements Initializable {
         String nuevoTratamiento = txtNuevoTratamiento.getText().trim();
 
         if (nuevoTratamiento.isEmpty()) {
-            mostrarAlerta(
-                    "Campo vacío",
-                    "Debe escribir un tratamiento.",
-                    Alert.AlertType.WARNING
-            );
+            mostrarAlerta("Campo vacío","Debe escribir un tratamiento.",Alert.AlertType.WARNING);
             return;
         }
 

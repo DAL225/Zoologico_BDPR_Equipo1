@@ -46,13 +46,12 @@ public class EdicionEspecialidadesController implements Initializable {
     private ObservableList<String> listaEspecialidades;
 
     /**
-     * Permite asignar la lista de especialidades.
-     * Public porque se accede desde la ventana principal.
+     * Permite asignar la lista de especialidades.Public porque se accede desde la ventana principal.
      *
-     * @param listaRecomendaciones lista observable de especialidades
+     * @param listaEspecialidades lista observable de especialidades
      */
-    public void setListaEspecialidades(ObservableList<String> listaRecomendaciones) {
-        this.listaEspecialidades = listaRecomendaciones;
+    public void setListaEspecialidades(ObservableList<String> listaEspecialidades) {
+        this.listaEspecialidades = listaEspecialidades;
         cargarDatos();
     }
 
@@ -60,14 +59,13 @@ public class EdicionEspecialidadesController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         // Configuracion columna especialidad
-        // Para String se usa "value"
-        colEspecialidad.setCellValueFactory( new PropertyValueFactory<>("value"));
+        colEspecialidad.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
 
         // Configuracion columna eliminar
         configurarColumnaEliminar();
 
         // Carga datos
-        cargarDatos();
+        //cargarDatos();
     }
 
     /**
@@ -85,7 +83,7 @@ public class EdicionEspecialidadesController implements Initializable {
      * @param event evento del boton
      */
     @FXML
-    private void agregarRecomendacion(ActionEvent event) {
+    private void agregarEspecialidad(ActionEvent event) {
 
         String nuevaEspecialidad
                 = txtNuevaEspecialidad.getText().trim();
@@ -96,8 +94,8 @@ public class EdicionEspecialidadesController implements Initializable {
         }
 
         listaEspecialidades.add(nuevaEspecialidad);
-
         txtNuevaEspecialidad.clear();
+        cargarDatos();
 
         System.out.println("Especialidad agregada: " + nuevaEspecialidad);
     }

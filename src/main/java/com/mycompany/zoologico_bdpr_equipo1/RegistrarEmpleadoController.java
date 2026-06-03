@@ -205,7 +205,7 @@ public class RegistrarEmpleadoController implements Initializable {
     @FXML
     private void agregarEspecialidades(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionRecomendaciones.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionEspecialidades.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -265,6 +265,7 @@ public class RegistrarEmpleadoController implements Initializable {
                 || password.isEmpty()
                 || tipoEmpleado == null) {
             mostrarAlerta("Campos incompletos", "Todos los campos son obligatorios.", Alert.AlertType.WARNING);
+            return;
         }
         
         try{

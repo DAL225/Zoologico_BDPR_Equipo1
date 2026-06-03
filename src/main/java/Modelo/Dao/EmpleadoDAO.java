@@ -21,8 +21,6 @@ public interface EmpleadoDAO {
     
     Empleado validCredentials(String usuario, String pass) throws Exception;
     
-    boolean modificarDatos(Empleado empleadoAux) throws Exception;
-    
     String obtenerTipoEmpleado(int id) throws Exception;
     
 }

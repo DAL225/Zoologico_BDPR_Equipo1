@@ -61,13 +61,11 @@ public class EdicionRecomendacionesController implements Initializable {
 
         // Configuracion columna recomendacion
         // Para String se usa "value"
-        colRecomendacion.setCellValueFactory( new PropertyValueFactory<>("value"));
+        colRecomendacion.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
 
         // Configuracion columna eliminar
         configurarColumnaEliminar();
 
-        // Carga datos
-        cargarDatos();
     }
 
     /**
@@ -147,9 +145,7 @@ public class EdicionRecomendacionesController implements Initializable {
      */
     private void cargarDatos() {
 
-        if (listaRecomendaciones == null
-                || listaRecomendaciones.isEmpty()) {
-
+        if (listaRecomendaciones == null || listaRecomendaciones.isEmpty()) {
             mostrarAlerta("Vacio", "No hay recomendaciones para mostrar", Alert.AlertType.INFORMATION);
             return;
         }

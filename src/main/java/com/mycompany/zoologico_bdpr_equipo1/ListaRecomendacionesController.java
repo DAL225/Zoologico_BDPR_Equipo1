@@ -41,9 +41,8 @@ public class ListaRecomendacionesController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        colRecomendacion.setCellValueFactory(new PropertyValueFactory<>("value"));
-
-        cargarDatos();
+        
+        colRecomendacion.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue()));
     }
 
     @FXML

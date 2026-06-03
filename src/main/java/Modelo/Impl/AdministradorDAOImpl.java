@@ -7,6 +7,17 @@ package Modelo.Impl;
 import Modelo.Administrador;
 import Modelo.Dao.AdministradorDAO;
 import Modelo.Turno;
+import java.sql.Array;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import oracle.jdbc.OracleConnection;
+import oracle.jdbc.OracleTypes;
 
 /**
  *
@@ -22,169 +33,142 @@ public class AdministradorDAOImpl extends BaseDAOOracle implements Administrador
     public AdministradorDAOImpl() throws Exception {
     }
 
+    /**
+     * Agrega un nuevo administrador a la BD.
+     *
+     * @param adminAux admin a agregar
+     * @return true exito, false en caso contrario
+     * @throws Exception
+     */
     @Override
     public boolean agregarAdministrador(Administrador adminAux) throws Exception {
-        // 1. Bloque PL/SQL que inserta el admin y luego le asocia los turnos por su ID
-        StringBuilder sql = new StringBuilder();
-        sql.append("DECLARE ");
-        sql.append("  v_id_emp NUMBER; ");
-        sql.append("BEGIN ");
-        sql.append("  -- Obtener el siguiente ID de la secuencia \n");
-        sql.append("  v_id_emp := sec_empleados.NEXTVAL; ");
-        sql.append("  ");
-        sql.append("  -- 1. Insertar el Administrador con la colección de turnos inicializada vacía \n");
-        sql.append("  INSERT INTO empleados_tab VALUES ( ");
-        sql.append("    administrador_typ(v_id_emp, ?, ?, ?, turnos_ref()) ");
-        sql.append("  ); ");
 
-        // 2. Si el objeto trae turnos en Java, generamos dinámicamente los inserts de sus referencias
-        if (adminAux.getTurnos() != null && !adminAux.getTurnos().isEmpty()) {
-            sql.append("\n  -- 2. Asociar las referencias (REF) de los turnos existentes \n");
-            for (Turno t : adminAux.getTurnos()) {
-                sql.append("  INSERT INTO TABLE( ")
-                        .append("    SELECT e.turnos_asignados FROM empleados_tab e WHERE e.id_emp = v_id_emp ")
-                        .append("  ) SELECT REF(t) FROM turnos_tab t WHERE t.id_turno = ").append(t.getId()).append("; ");
-            }
-        }
+        String sql = "{CALL sp_agregar_administrador(?, ?, ?, ?)}";
 
-        sql.append("\n  COMMIT; ");
-        sql.append("END;");
+        try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
 
-        // 3. Ejecución a través de JDBC
-        try (java.sql.CallableStatement cstmt = getConexion().prepareCall(sql.toString())) {
-
-            // Pasamos los parámetros básicos (Nombre, Usuario, Password)
             cstmt.setString(1, adminAux.getNombre());
             cstmt.setString(2, adminAux.getUsuario());
             cstmt.setString(3, adminAux.getPassword());
 
-            int filasAfectadas = cstmt.executeUpdate();
-            return filasAfectadas >= 0;
+            Integer[] idsTurnos = (adminAux.getTurnos() != null && !adminAux.getTurnos().isEmpty())
+                    ? adminAux.getTurnos().stream().map(Turno::getId).toArray(Integer[]::new)
+                    : new Integer[0];
 
-        } catch (Exception e) {
-            throw new Exception("Error al insertar Administrador con turnos: " + e.getMessage());
+            OracleConnection oracleCon = con.unwrap(OracleConnection.class);
+            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
+
+            cstmt.setArray(4, arrayTurnos);
+            cstmt.execute();
+            return true;
+
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 20001) {
+                throw new Exception("El nombre de usuario ya se encuentra registrado.");
+            }
+            throw new Exception("Error al insertar administrador: " + e.getMessage());
         }
     }
 
+    /**
+     * Modifica lod datos de un administrador
+     *
+     * @param adminAux admin con datos y id que se modificara
+     * @return true exito, false en caso contrario
+     * @throws Exception
+     */
     @Override
     public boolean modificarAdministrador(Administrador adminAux) throws Exception {
-        StringBuilder sql = new StringBuilder();
-        sql.append("DECLARE ");
-        sql.append("  v_admin administrador_typ; ");
-        sql.append("BEGIN ");
+        String sql = "{CALL sp_modificar_administrador(?, ?, ?, ?, ?)}";
 
-        // 1. Instanciamos el objeto administrador para poder usar sus métodos
-        // Pasamos los datos que vienen de Java. (El último parámetro turnos_ref() limpia los turnos previos)
-        sql.append("  v_admin := administrador_typ(?, ?, ?, ?, turnos_ref()); ");
+        try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
 
-        // 2. Invocamos el procedimiento que ya tienes en la BD para actualizar los datos básicos
-        sql.append("  v_admin.modificar_empleado(?, ?, ?, ?); ");
+            cstmt.setInt(1, adminAux.getId());
+            cstmt.setString(2, adminAux.getNombre());
+            cstmt.setString(3, adminAux.getUsuario());
+            cstmt.setString(4, adminAux.getPassword());
 
-        // 3. Si en Java mandaste una lista de turnos, los asociamos uno a uno
-        if (adminAux.getTurnos() != null && !adminAux.getTurnos().isEmpty()) {
-            sql.append("\n  -- Reasociar las nuevas referencias de turnos \n");
-            for (Turno t : adminAux.getTurnos()) {
-                sql.append("  INSERT INTO TABLE( ")
-                        .append("    SELECT e.turnos_asignados FROM empleados_tab e WHERE e.id_emp = ? ")
-                        .append("  ) SELECT REF(t) FROM turnos_tab t WHERE t.id_turno = ").append(t.getId()).append("; ");
+            Integer[] idsTurnos = adminAux.getTurnos() == null
+                    ? new Integer[0]
+                    : adminAux.getTurnos().stream().map(Turno::getId).toArray(Integer[]::new);
+
+            OracleConnection oracleCon = con.unwrap(OracleConnection.class);
+            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
+
+            cstmt.setArray(5, arrayTurnos);
+            cstmt.execute();
+
+            return true;
+
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 20001) {
+                throw new Exception("El nombre de usuario ya se encuentra registrado por otro empleado.");
             }
-        }
-
-        sql.append("\n  COMMIT; ");
-        sql.append("END;");
-
-        try (java.sql.CallableStatement cstmt = getConexion().prepareCall(sql.toString())) {
-            int paramIndex = 1;
-
-            // --- Parámetros para el constructor del objeto v_admin ---
-            cstmt.setInt(paramIndex++, adminAux.getId());
-            cstmt.setString(paramIndex++, adminAux.getNombre());
-            cstmt.setString(paramIndex++, adminAux.getUsuario());
-            cstmt.setString(paramIndex++, adminAux.getPassword());
-
-            // --- Parámetros para el método v_admin.modificar_empleado(...) ---
-            cstmt.setInt(paramIndex++, adminAux.getId());        // id_e
-            cstmt.setString(paramIndex++, adminAux.getNombre());  // p_nombre
-            cstmt.setString(paramIndex++, adminAux.getUsuario()); // p_usuario
-            cstmt.setString(paramIndex++, adminAux.getPassword());// p_password
-
-            // --- Parámetros dinámicos para el bucle de los turnos (si existen) ---
-            if (adminAux.getTurnos() != null && !adminAux.getTurnos().isEmpty()) {
-                for (Turno t : adminAux.getTurnos()) {
-                    cstmt.setInt(paramIndex++, adminAux.getId()); // ID del empleado para el WHERE del INSERT INTO TABLE
-                }
-            }
-
-            // Ejecutamos la actualización completa
-            int filasAfectadas = cstmt.executeUpdate();
-            return filasAfectadas >= 0;
-
-        } catch (Exception e) {
-            // Esto atrapará también el RAISE_APPLICATION_ERROR(-20005) si el ID no existía
             throw new Exception("Error al modificar el Administrador: " + e.getMessage());
         }
     }
 
+    /**
+     * Obtiene un admin por su id.
+     *
+     * @param id id a buscar
+     * @return administrador
+     * @throws Exception
+     */
     @Override
     public Administrador obtenerAdministrador(int id) throws Exception {
         Administrador administradorAux = null;
 
-        // Consulta para obtener los datos básicos del administrador (filtrando por subtipo)
-        String sqlAdmin = "SELECT e.id_emp, e.nombre, e.usuario, e.password "
-                + "FROM empleados_tab e "
-                + "WHERE e.id_emp = ? AND VALUE(e) IS OF (administrador_typ)";
+        String sql = "{CALL sp_obtener_administrador(?, ?, ?, ?, ?, ?)}";
 
-        // Consulta para obtener los datos de los turnos desreferenciando los REF
-        String sqlTurnos = "SELECT DEREF(t.column_value).id_turno, "
-                + "       DEREF(t.column_value).fecha, "
-                + "       DEREF(t.column_value).hora_inicio, "
-                + "       DEREF(t.column_value).hora_fin "
-                + "FROM empleados_tab e, TABLE(e.turnos_asignados) t "
-                + "WHERE e.id_emp = ?";
+        try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
 
-        try {
-            // 1. Buscamos los datos del Administrador
-            try (java.sql.PreparedStatement pstmtAdmin = getConexion().prepareStatement(sqlAdmin)) {
-                pstmtAdmin.setInt(1, id);
+            cstmt.setInt(1, id);
 
-                try (java.sql.ResultSet rsAdmin = pstmtAdmin.executeQuery()) {
-                    if (rsAdmin.next()) {
-                        // Instanciamos el objeto con los datos básicos
-                        administradorAux = new Administrador();
-                        administradorAux.setId(rsAdmin.getInt("id_emp"));
-                        administradorAux.setNombre(rsAdmin.getString("nombre"));
-                        administradorAux.setUsuario(rsAdmin.getString("usuario"));
-                        administradorAux.setPassword(rsAdmin.getString("password"));
+            cstmt.registerOutParameter(2, Types.NUMERIC);
+            cstmt.registerOutParameter(3, Types.VARCHAR);
+            cstmt.registerOutParameter(4, Types.VARCHAR);
+            cstmt.registerOutParameter(5, Types.VARCHAR);
+            cstmt.registerOutParameter(6, OracleTypes.CURSOR);
 
-                        // Inicializamos la lista de turnos en el objeto Java
-                        java.util.List<Turno> listaTurnos = new java.util.ArrayList<>();
-                        administradorAux.setTurnos(listaTurnos);
-                    } else {
-                        // Si no se encuentra el administrador, retornamos null o lanzamos excepción
-                        return null;
+            cstmt.execute();
+
+            administradorAux = new Administrador();
+            administradorAux.setId(cstmt.getInt(2));
+            administradorAux.setNombre(cstmt.getString(3));
+            administradorAux.setUsuario(cstmt.getString(4));
+            administradorAux.setPassword(cstmt.getString(5));
+            administradorAux.setTurnos(new ArrayList<>());
+
+            try (ResultSet rs = (ResultSet) cstmt.getObject(6)) {
+                while (rs.next()) {
+                    Turno turno = new Turno();
+
+                    turno.setId(rs.getInt("id_turno"));
+
+                    Date fecha = rs.getDate("fecha");
+                    if (fecha != null) {
+                        turno.setFecha(fecha.toLocalDate());
                     }
+
+                    Timestamp inicio = rs.getTimestamp("hora_inicio");
+                    if (inicio != null) {
+                        turno.setHoraInicio(inicio.toLocalDateTime().toLocalTime());
+                    }
+
+                    Timestamp fin = rs.getTimestamp("hora_fin");
+                    if (fin != null) {
+                        turno.setHoraFin(fin.toLocalDateTime().toLocalTime());
+                    }
+
+                    administradorAux.getTurnos().add(turno);
                 }
             }
 
-            // 2. Si el administrador existe, cargamos sus turnos asociados
-            try (java.sql.PreparedStatement pstmtTurnos = getConexion().prepareStatement(sqlTurnos)) {
-                pstmtTurnos.setInt(1, id);
-
-                try (java.sql.ResultSet rsTurnos = pstmtTurnos.executeQuery()) {
-                    while (rsTurnos.next()) {
-                        Turno turno = new Turno();
-                        turno.setId(rsTurnos.getInt(1)); // id_turno
-                        turno.setFecha(rsTurnos.getDate(2).toLocalDate()); // fecha
-                        turno.setHoraInicio(rsTurnos.getTimestamp(3).toLocalDateTime().toLocalTime()); // hora_inicio
-                        turno.setHoraFin(rsTurnos.getTimestamp(4).toLocalDateTime().toLocalTime()); // hora_fin
-
-                        // Agregamos el turno a la lista del administrador
-                        administradorAux.getTurnos().add(turno);
-                    }
-                }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1403) {
+                return null;
             }
-
-        } catch (Exception e) {
             throw new Exception("Error al obtener el Administrador: " + e.getMessage());
         }
 
