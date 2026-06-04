@@ -34,7 +34,7 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
      * Obtiene un habitat en particular segun su id, usado en modificar y eliminar.
      * @param id id buscado
      * @return
-     * @throws Exception 
+     * @throws Exception general
      */
     @Override
     public Habitat obtenerHabitat(int id) throws Exception {

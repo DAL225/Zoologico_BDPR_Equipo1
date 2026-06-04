@@ -165,7 +165,7 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      * Eliminar un animal por su id.
      * @param idAnimal id del animal requerido
      * @return true exito, false en caso contrario
-     * @throws Exception 
+     * @throws Exception general 
      */
     @Override
     public boolean eliminarAnimal(int idAnimal) throws Exception{
