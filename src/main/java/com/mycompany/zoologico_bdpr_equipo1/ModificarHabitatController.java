@@ -138,7 +138,6 @@ public class ModificarHabitatController implements Initializable {
             mostrarAlerta("Fracaso","No se pudo modificar el hábitat",Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

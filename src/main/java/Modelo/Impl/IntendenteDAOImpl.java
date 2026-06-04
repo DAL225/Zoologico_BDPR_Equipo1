@@ -16,6 +16,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import oracle.jdbc.OracleConnection;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 /**
  *
@@ -39,42 +41,58 @@ public class IntendenteDAOImpl extends BaseDAOOracle implements IntendenteDAO {
      * @throws Exception
      */
     @Override
-    public boolean agregarIntendente(Intendente intendenteAux) throws Exception {
-        String sql = "{CALL sp_agregar_intendente(?, ?, ?, ?, ?)}";
+public boolean agregarIntendente(Intendente intendenteAux) throws Exception {
 
-        try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
+    String sql = "{CALL sp_agregar_intendente(?, ?, ?, ?, ?)}";
 
-            cstmt.setString(1, intendenteAux.getNombre());
-            cstmt.setString(2, intendenteAux.getUsuario());
-            cstmt.setString(3, intendenteAux.getPassword());
+    try (Connection con = getConexion();
+         CallableStatement cstmt = con.prepareCall(sql)) {
 
-            OracleConnection oracleCon = con.unwrap(OracleConnection.class);
+        cstmt.setString(1, intendenteAux.getNombre());
+        cstmt.setString(2, intendenteAux.getUsuario());
+        cstmt.setString(3, intendenteAux.getPassword());
 
-            Integer[] idsTurnos = intendenteAux.getTurnos() == null
-                    ? new Integer[0]
-                    : intendenteAux.getTurnos().stream().map(Turno::getId).toArray(Integer[]::new);
+        OracleConnection oracleCon = con.unwrap(OracleConnection.class);
 
-            Integer[] idsHabitats = intendenteAux.getIdsHabitats() == null
-                    ? new Integer[0]
-                    : intendenteAux.getIdsHabitats().toArray(new Integer[0]);
+        // turnos ids
+        Integer[] idsTurnos = intendenteAux.getTurnos() == null
+                ? new Integer[0]
+                : intendenteAux.getTurnos()
+                        .stream()
+                        .map(Turno::getId)
+                        .toArray(Integer[]::new);
 
-            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
-            Array arrayHabitats = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsHabitats);
+        ArrayDescriptor descTurnos =
+                ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
-            cstmt.setArray(4, arrayTurnos);
-            cstmt.setArray(5, arrayHabitats);
+        ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
 
-            cstmt.execute();
-            return true;
+        // habitats
+        Integer[] idsHabitats = intendenteAux.getIdsHabitats() == null
+                ? new Integer[0]
+                : intendenteAux.getIdsHabitats().toArray(new Integer[0]);
 
-        } catch (SQLException e) {
-            if (e.getErrorCode() == 20001) {
-                throw new Exception("El nombre de usuario ya se encuentra registrado.");
-            }
+        ArrayDescriptor descHabitats =
+                ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
-            throw new Exception("Error al insertar el Intendente: " + e.getMessage());
+        ARRAY arrayHabitats = new ARRAY(descHabitats, oracleCon, idsHabitats);
+
+        // parametros
+        cstmt.setArray(4, arrayTurnos);
+        cstmt.setArray(5, arrayHabitats);
+
+        cstmt.execute();
+        return true;
+
+    } catch (SQLException e) {
+
+        if (e.getErrorCode() == 20001) {
+            throw new Exception("El nombre de usuario ya se encuentra registrado.");
         }
+
+        throw new Exception("Error al insertar el Intendente: " + e.getMessage(), e);
     }
+}
 
     /**
      * Modifica los datos de un intendente con los de un parametro
@@ -84,47 +102,54 @@ public class IntendenteDAOImpl extends BaseDAOOracle implements IntendenteDAO {
      * @throws Exception
      */
     @Override
-    public boolean modificarIntendente(Intendente intendenteAux) throws Exception {
-        String sql = "{CALL sp_modificar_intendente(?,?,?,?,?,?)}";
+public boolean modificarIntendente(Intendente intendenteAux) throws Exception {
 
-        try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
+    String sql = "{CALL sp_modificar_intendente(?,?,?,?,?,?)}";
 
-            cstmt.setInt(1, intendenteAux.getId());
-            cstmt.setString(2, intendenteAux.getNombre());
-            cstmt.setString(3, intendenteAux.getUsuario());
-            cstmt.setString(4, intendenteAux.getPassword());
+    try (Connection con = getConexion();
+         CallableStatement cstmt = con.prepareCall(sql)) {
 
-            OracleConnection oracleCon = con.unwrap(OracleConnection.class);
+        cstmt.setInt(1, intendenteAux.getId());
+        cstmt.setString(2, intendenteAux.getNombre());
+        cstmt.setString(3, intendenteAux.getUsuario());
+        cstmt.setString(4, intendenteAux.getPassword());
 
-            Array arrayTurnos;
-            if (intendenteAux.getTurnos() != null && !intendenteAux.getTurnos().isEmpty()) {
-                Integer[] idsTurnos = intendenteAux.getTurnos()
+        OracleConnection oracleCon = con.unwrap(OracleConnection.class);
+
+        // turnos ids
+        Integer[] idsTurnos = (intendenteAux.getTurnos() == null)
+                ? new Integer[0]
+                : intendenteAux.getTurnos()
                         .stream()
                         .map(Turno::getId)
                         .toArray(Integer[]::new);
 
-                arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
-            } else {
-                arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", new Integer[]{});
-            }
+        ArrayDescriptor descTurnos =
+                ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
-            Array arrayHabitats;
-            if (intendenteAux.getIdsHabitats() != null && !intendenteAux.getIdsHabitats().isEmpty()) {
-                Integer[] idsHabitats = intendenteAux.getIdsHabitats().toArray(new Integer[0]);
-                arrayHabitats = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsHabitats);
-            } else {
-                arrayHabitats = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", new Integer[]{});
-            }
+        ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
 
-            cstmt.setArray(5, arrayTurnos);
-            cstmt.setArray(6, arrayHabitats);
+        // habitats
+        Integer[] idsHabitats = (intendenteAux.getIdsHabitats() == null)
+                ? new Integer[0]
+                : intendenteAux.getIdsHabitats().toArray(new Integer[0]);
 
-            return cstmt.executeUpdate() >= 0;
+        ArrayDescriptor descHabitats =
+                ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
-        } catch (Exception e) {
-            throw new Exception("Error al modificar el Intendente: " + e.getMessage());
-        }
+        ARRAY arrayHabitats = new ARRAY(descHabitats, oracleCon, idsHabitats);
+
+        // parametros
+        cstmt.setArray(5, arrayTurnos);
+        cstmt.setArray(6, arrayHabitats);
+
+        cstmt.execute();
+        return true;
+
+    } catch (Exception e) {
+        throw new Exception("Error al modificar el Intendente: " + e.getMessage(), e);
     }
+}
 
     /**
      * Obtiene de oracle la lista de ids que tiene asignados(habitats).

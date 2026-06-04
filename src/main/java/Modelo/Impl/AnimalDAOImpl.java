@@ -52,10 +52,13 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
         }
         animal.setSexo(doc.getString("sexo"));
         animal.setEstadoSalud(doc.getString("estado_salud"));
-        animal.setRecomendacionesCuidado(doc.getList("recomendaciones_cuidado", String.class));
-        animal.setTratamientos(doc.getList("tratamientos", String.class));
-        //Logica obtencion habitat/mongo
-        
+
+        List<String> recomendaciones = doc.getList("recomendaciones_cuidado", String.class);
+        animal.setRecomendacionesCuidado(recomendaciones != null ? recomendaciones : new ArrayList<>());
+
+        List<String> tratamientos = doc.getList("tratamientos", String.class);
+        animal.setTratamientos(tratamientos != null ? tratamientos : new ArrayList<>());
+
         return animal;
     }
     
@@ -71,22 +74,56 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
     @Override
     public List<Animal> obtenerAnimales(List<Integer> ids) throws Exception {
         List<Animal> listaAnimales = new ArrayList<>();
-        
-        //logica find/mongo where
+
+        // Validación inicial: Si no hay IDs que buscar, regresamos la lista vacía de inmediato
+        if (ids == null || ids.isEmpty()) {
+            return listaAnimales;
+        }
+
+        FindIterable<Document> documentosAux = DAO.colAnimales.find(com.mongodb.client.model.Filters.in("_id", ids));
+
+        // Mapeamos de forma segura cada documento encontrado
+        for (Document doc : documentosAux) {
+            if (doc != null) {
+                Animal animalAux = new Animal();
+
+                // Asignamos el ID del documento
+                animalAux.setId(doc.getInteger("_id"));
+
+                // Cadenas de texto protegidas contra nulos
+                animalAux.setNombreCientifico(doc.getString("nombre_cientifico") != null ? doc.getString("nombre_cientifico") : "");
+                animalAux.setEspecie(doc.getString("especie") != null ? doc.getString("especie") : "");
+                animalAux.setNombreComun(doc.getString("nombre_común") != null ? doc.getString("nombre_común") : "");
+                animalAux.setSexo(doc.getString("sexo") != null ? doc.getString("sexo") : "");
+                animalAux.setEstadoSalud(doc.getString("estado_salud") != null ? doc.getString("estado_salud") : "");
+
+                // Colecciones
+                List<String> recomendaciones = doc.getList("recomendaciones_cuidado", String.class);
+                animalAux.setRecomendacionesCuidado(recomendaciones != null ? recomendaciones : new ArrayList<>());
+
+                List<String> tratamientos = doc.getList("tratamientos", String.class);
+                animalAux.setTratamientos(tratamientos != null ? tratamientos : new ArrayList<>());
+
+                // Agregamos el animal ya estructurado a la lista final
+                listaAnimales.add(animalAux);
+            }
+        }
 
         return listaAnimales;
     }
-    
+
     /**
      * Obtiene todos los animales almacenados sin excepcion.
-     * @return Lista de animales, ya sea con contenido o vacia, si no se encontro ninguno
-     * @throws Exception 
+     *
+     * @return Lista de animales, ya sea con contenido o vacia, si no se
+     * encontro ninguno
+     * @throws Exception
      */
     @Override
     public List<Animal> obtenerTodosAnimales() throws Exception {
         List<Animal> listaAnimales = new ArrayList<>();
         FindIterable<Document> Aux = DAO.obtenerDocumentos(colAnimales);
-        for (Document doc : Aux){
+        for (Document doc : Aux) {
             Animal animalAux = this.obtenerAnimal(doc.getInteger("_id"));
             listaAnimales.add(animalAux);
         }
@@ -96,11 +133,12 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
     }
 
     /**
-     * Obtiene el id maximo dentro de la bd.
-     * La idea es usar 'sort(descending("_id")).first()'
-     * que se cree obtiene el maximo id, luego sumarle 1, y regresar eso como valor.
+     * Obtiene el id maximo dentro de la bd. La idea es usar
+     * 'sort(descending("_id")).first()' que se cree obtiene el maximo id, luego
+     * sumarle 1, y regresar eso como valor.
+     *
      * @return el id disponible
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public Integer obtenerIdDisponible() throws Exception {
@@ -116,13 +154,14 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
             return 1;
         }
     }
-    
+
     /**
-     * Modifica los datos de un animal pasando un parametro con los datos a modificar
-     * y el id del cual se modificara.
+     * Modifica los datos de un animal pasando un parametro con los datos a
+     * modificar y el id del cual se modificara.
+     *
      * @param animalAux animal con los nuevos datos pero el id requerido
      * @return true exito, false en caso contrario
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public boolean modificarDatos(Animal animalAux){
@@ -160,21 +199,13 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
             return false;
         }
     }
-    
+
     /**
      * Eliminar un animal por su id.
+     *
      * @param idAnimal id del animal requerido
      * @return true exito, false en caso contrario
-     * @throws Exception general 
      */
-    @Override
-    public boolean eliminarAnimal(int idAnimal) throws Exception{
-        if (DAO.eliminarDocumento(idAnimal, colAnimales)){
-            return true;
-        } else {
-            return false;
-        }
-    }
     
     /**
      * Se modifica la lista de tratamientos de un animal.
@@ -251,13 +282,25 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
         if (animalAux.getEstadoSalud() != null){
             doc = DAO.appendString(doc, "estado_salud", animalAux.getEstadoSalud());
         }
-        if (!animalAux.getRecomendacionesCuidado().isEmpty()){
-            doc = DAO.appendArrayString(doc, "recomendaciones_cuidado", (ArrayList<String>) animalAux.getRecomendacionesCuidado());
+        if (!animalAux.getRecomendacionesCuidado().isEmpty()) {
+            // lista al constructor de ArrayList en lugar de hacer cast directo
+            ArrayList<String> recomendacionesList = new ArrayList<>(animalAux.getRecomendacionesCuidado());
+            doc = DAO.appendArrayString(doc, "recomendaciones_cuidado", recomendacionesList);
         }
-        if (!animalAux.getTratamientos().isEmpty()){
-            doc = DAO.appendArrayString(doc, "tratamientos", (ArrayList<String>) animalAux.getTratamientos());
+
+        if (!animalAux.getTratamientos().isEmpty()) {
+            // tratamientos
+            ArrayList<String> tratamientosList = new ArrayList<>(animalAux.getTratamientos());
+            doc = DAO.appendArrayString(doc, "tratamientos", tratamientosList);
         }
-        if (DAO.insertarUno(doc, colAnimales)){
+        if (DAO.insertarUno(doc, colAnimales)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public boolean eliminarAnimal(int idAnimal) throws Exception{
+        if (DAO.eliminarDocumento(idAnimal, colAnimales)){
             return true;
         } else {
             return false;

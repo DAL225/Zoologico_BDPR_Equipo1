@@ -18,6 +18,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 /**
  *
@@ -56,17 +58,24 @@ public class AdministradorDAOImpl extends BaseDAOOracle implements Administrador
                     : new Integer[0];
 
             OracleConnection oracleCon = con.unwrap(OracleConnection.class);
-            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
+
+            ArrayDescriptor descTurnos
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
+
+            ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
 
             cstmt.setArray(4, arrayTurnos);
+
             cstmt.execute();
             return true;
 
         } catch (SQLException e) {
+
             if (e.getErrorCode() == 20001) {
                 throw new Exception("El nombre de usuario ya se encuentra registrado.");
             }
-            throw new Exception("Error al insertar administrador: " + e.getMessage());
+
+            throw new Exception("Error al insertar administrador: " + e.getMessage(), e);
         }
     }
 
@@ -79,6 +88,7 @@ public class AdministradorDAOImpl extends BaseDAOOracle implements Administrador
      */
     @Override
     public boolean modificarAdministrador(Administrador adminAux) throws Exception {
+
         String sql = "{CALL sp_modificar_administrador(?, ?, ?, ?, ?)}";
 
         try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
@@ -88,23 +98,29 @@ public class AdministradorDAOImpl extends BaseDAOOracle implements Administrador
             cstmt.setString(3, adminAux.getUsuario());
             cstmt.setString(4, adminAux.getPassword());
 
-            Integer[] idsTurnos = adminAux.getTurnos() == null
+            Integer[] idsTurnos = (adminAux.getTurnos() == null)
                     ? new Integer[0]
                     : adminAux.getTurnos().stream().map(Turno::getId).toArray(Integer[]::new);
 
             OracleConnection oracleCon = con.unwrap(OracleConnection.class);
-            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
+
+            ArrayDescriptor descTurnos
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
+
+            ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
 
             cstmt.setArray(5, arrayTurnos);
-            cstmt.execute();
 
+            cstmt.execute();
             return true;
 
         } catch (SQLException e) {
+
             if (e.getErrorCode() == 20001) {
                 throw new Exception("El nombre de usuario ya se encuentra registrado por otro empleado.");
             }
-            throw new Exception("Error al modificar el Administrador: " + e.getMessage());
+
+            throw new Exception("Error al modificar el Administrador: " + e.getMessage(), e);
         }
     }
 

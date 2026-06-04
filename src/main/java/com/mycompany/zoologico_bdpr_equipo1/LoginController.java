@@ -4,6 +4,7 @@ import Modelo.Administrador;
 import Modelo.Cuidador;
 import Modelo.Dao.EmpleadoDAO;
 import Modelo.Empleado;
+import Modelo.Impl.EmpleadoDAOImpl;
 import Modelo.Intendente;
 import Modelo.Veterinario;
 import java.io.IOException;
@@ -44,7 +45,8 @@ public class LoginController {
     private void iniciarSesion(ActionEvent event) {
 
         try {
-
+            empleadoDao = new EmpleadoDAOImpl();
+            
             String usuario = txtUsuario.getText();
             String pass = txtPassword.getText();
 
@@ -61,7 +63,7 @@ public class LoginController {
                 Administrador admin = (Administrador) empleado;
 
                 FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/scenes/administrador.fxml"));
+                        getClass().getResource("/scenes/admin.fxml"));
 
                 Parent root = loader.load();
 

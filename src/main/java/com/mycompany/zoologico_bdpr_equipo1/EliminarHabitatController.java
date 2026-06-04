@@ -109,7 +109,6 @@ public class EliminarHabitatController implements Initializable {
             mostrarAlerta("Error","No se pudo eliminar el habitat",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

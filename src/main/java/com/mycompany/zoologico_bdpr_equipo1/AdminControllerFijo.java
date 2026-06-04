@@ -19,20 +19,14 @@ import javafx.stage.Stage;
  */
 public class AdminControllerFijo {
 
-    @FXML
-    private ChoiceBox<String> opcionesMenu;
-    @FXML
-    private AnchorPane subPnl;
-    
-    @FXML
-    private Button btnCerrarSesion;
+    @FXML private ChoiceBox<String> opcionesMenu;
+    @FXML private AnchorPane subPnl;
+    @FXML private Button btnCerrarSesion;
 
-    // Esta variable nos ayudará a saber qué botón lateral está activo
     private String seccionActiva = "";
 
     @FXML
-    private void initialize() { // Simplificado para JavaFX moderno
-        // Escuchamos cuando el usuario seleccione algo en el ChoiceBox
+    private void initialize() {
         opcionesMenu.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 cambiarVistaContenedor(newValue);
@@ -40,35 +34,24 @@ public class AdminControllerFijo {
         });
     }
     
-    /**
-     * Cierra sesión y regresa al login.
-     */
     @FXML
     private void cerrarSesion() {
         try {
-            // Cargar la vista del login
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/scenes/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/login.fxml"));
             Parent root = loader.load();
 
-            // Crear nueva ventana
             Stage loginStage = new Stage();
             loginStage.setTitle("Iniciar Sesión");
             loginStage.setScene(new Scene(root));
             loginStage.show();
 
-            // Cerrar ventana actual
             Stage stageActual = (Stage) btnCerrarSesion.getScene().getWindow();
             stageActual.close();
-
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    /**
-     * Clic en el botón Empleados, cambia los valores del choice Box
-     */
     @FXML
     private void clicEmpleados() {
         seccionActiva = "Empleados";
@@ -80,9 +63,6 @@ public class AdminControllerFijo {
         ));
     }
 
-    /**
-     * Clic en el botón Turnos, cambia los valores del choice Box
-     */
     @FXML
     private void clicTurnos() {
         seccionActiva = "Turnos";
@@ -94,9 +74,6 @@ public class AdminControllerFijo {
         ));
     }
 
-    /**
-     * Clic en el botón Habitats, cambia los valores del choice Box
-     */
     @FXML
     private void clicHabitats() {
         seccionActiva = "Habitats";
@@ -108,9 +85,6 @@ public class AdminControllerFijo {
         ));
     }
 
-    /**
-     * Clic en el botón Animales, cambia los valores del choice Box
-     */
     @FXML
     private void clicAnimales() {
         seccionActiva = "Animales";
@@ -123,106 +97,95 @@ public class AdminControllerFijo {
     }
 
     /**
-     * Cambia la vista del subPnl, según la opción del choiceBox.
+     * Cambia la vista del subPnl o abre ventanas independientes según la opción del choiceBox.
      */
     private void cambiarVistaContenedor(String opcionSeleccionada) {
         String archivoFXML = this.fxmlCorrespondiente(opcionSeleccionada);
 
-        // CORRECCIÓN: Si está vacío, entónces SÍ salimos del método para evitar errores.
         if (archivoFXML == null || archivoFXML.isBlank()) {
             return;
         }
 
-        // Abre una nueva ventana para las listas de elementos
-        if (archivoFXML.equals("listaEmpleados.fxml")
-                || archivoFXML.equals("listaTurnos.fxml")
-                || archivoFXML.equals("listaHabitats.fxml")
-                || archivoFXML.equals("listaAnimales.fxml")) {
+        // --- CASO 1: Vistas globales que se abren en ventanas independientes (Stages) ---
+        if (archivoFXML.equals("listaTurnos.fxml") 
+                || archivoFXML.equals("listaHabitats.fxml") 
+                || archivoFXML.equals("listaAnimales.fxml") 
+                || archivoFXML.equals("listaEmpleados.fxml")) {
+            
             try {
-                FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/scenes/" + archivoFXML)
-                );
-
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/" + archivoFXML));
                 Parent root = loader.load();
-
                 Stage stage = new Stage();
-                stage.setTitle("Productos del Menú");
+
+                // CONFIGURACIÓN ESPECÍFICA SI ES LA LISTA DE ANIMALES GENERAL
+                if (archivoFXML.equals("listaAnimales.fxml")) {
+                    ListaAnimalesController controller = loader.getController();
+                    // Pasamos null para indicarle que cargue absolutamente todos los animales del zoo
+                    controller.setListaIdAnimales(null);
+                    stage.setTitle("Lista General de Animales");
+                } 
+                
+                else if (archivoFXML.equals("listaEmpleados.fxml")) {
+                    stage.setTitle("Lista General de Empleados");
+                } 
+                else if (archivoFXML.equals("listaTurnos.fxml")) {
+                    stage.setTitle("Lista de Turnos");
+                } 
+                else {
+                    ListaHabitatsController controller = loader.getController();
+                    // Pasamos null para indicarle que cargue absolutamente todos los animales del zoo
+                    controller.setListaHabitats(null);
+                    stage.setTitle("Lista General de Animales");
+                    stage.setTitle("Lista de Hábitats");
+                }
+
                 stage.setScene(new Scene(root));
                 stage.show();
-
-                System.out.println("Mostrando " + archivoFXML);
+                System.out.println("Mostrando ventana independiente: " + archivoFXML);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                mostrarAlerta("Error", "No se pudo cargar la vista de la tabla", Alert.AlertType.ERROR);
+                mostrarAlerta("Error", "No se pudo cargar la vista de la tabla flotante", Alert.AlertType.ERROR);
             }
-
-        } // Cambia el subPanel por la vista del formulario según la opción seleccionada
+        } 
+        // --- CASO 2: Formularios que se incrustan dentro del panel crema (subPnl) ---
         else {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/" + archivoFXML));
                 Parent nuevaVista = loader.load();
 
-                // Limpiamos el panel crema y metemos la nueva interfaz
                 subPnl.getChildren().setAll(nuevaVista);
                 subPnl.setVisible(true);
-
+                System.out.println("Incrustando formulario en panel: " + archivoFXML);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Error al cargar el panel: " + archivoFXML);
+                System.out.println("Error al cargar el panel interno: " + archivoFXML);
             }
         }
     }
 
-    /**
-     * Regresa el nombre del fxml que corresponda según la opción del choiceBox.
-     */
     private String fxmlCorrespondiente(String opcionSeleccionada) {
         switch (opcionSeleccionada) {
-            case "Registrar Empleado": 
-                return "registrarEmpleado.fxml";
-            case "Modificar Empleado": 
-                return "modificarEmpleado.fxml";
-            case "Eliminar Empleado": 
-                return "eliminarEmpleado.fxml";
-            case "Consultar Lista Empleados": 
-                return "listaEmpleados.fxml";
-            case "Registrar Turno": 
-                return "registrarTurno.fxml";
-            case "Modificar Turno": 
-                return "modificarTurno.fxml";
-            case "Eliminar Turno": 
-                return "eliminarTurno.fxml";
-            case "Consultar Lista Turnos": 
-                return "listaTurnos.fxml";
-            case "Registrar Habitat": 
-                return "registrarHabitat.fxml";
-            case "Modificar Habitat": 
-                return "modificarHabitat.fxml";
-            case "Eliminar Habitat": 
-                return "eliminarHabitat.fxml";
-            case "Consultar Lista Habitats": 
-                return "listaHabitats.fxml";
-            case "Registrar Animal": 
-                return "registrarAnimal.fxml";
-            case "Modificar Animal": 
-                return "modificarAnimal.fxml";
-            case "Eliminar Animal": 
-                return "eliminarAnimal.fxml";
-            case "Consultar Lista Animales": 
-                return "listaAnimales.fxml";
+            case "Registrar Empleado":       return "registrarEmpleado.fxml";
+            case "Modificar Empleado":       return "modificarEmpleado.fxml";
+            case "Eliminar Empleado":         return "eliminarEmpleado.fxml";
+            case "Consultar Lista Empleados": return "listaEmpleados.fxml";
+            case "Registrar Turno":          return "registrarTurno.fxml";
+            case "Modificar Turno":          return "modificarTurno.fxml";
+            case "Eliminar Turno":           return "eliminarTurno.fxml";
+            case "Consultar Lista Turnos":    return "listaTurnos.fxml";
+            case "Registrar Habitat":        return "registrarHabitat.fxml";
+            case "Modificar Habitat":        return "modificarHabitat.fxml";
+            case "Eliminar Habitat":         return "eliminarHabitat.fxml";
+            case "Consultar Lista Habitats":  return "listaHabitats.fxml";
+            case "Registrar Animal":         return "registrarAnimal.fxml";
+            case "Modificar Animal":         return "modificarAnimal.fxml";
+            case "Eliminar Animal":          return "eliminarAnimal.fxml";
+            case "Consultar Lista Animales":  return "listaAnimales.fxml";
             default: return "";
         }
     }
 
-    
-    /**
-     * Muestra una alerta con el título, mensaje y tipo especificados.
-     *
-     * @param titulo título de la ventana de alerta
-     * @param mensaje contenido mostrado en la alerta
-     * @param tipo tipo de alerta a mostrar
-     */
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
         Alert a = new Alert(tipo);
         a.setTitle(titulo);

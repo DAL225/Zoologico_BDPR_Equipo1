@@ -152,7 +152,7 @@ public class RegistrarAnimalController implements Initializable {
     @FXML
     private void agregarRecomendacion(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionRecomendaciones.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionRecomendaciones.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -178,7 +178,7 @@ public class RegistrarAnimalController implements Initializable {
     private void agregarTratamiento(ActionEvent event) {
 
         try{
-           FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionTratamientos.fxml"));
+           FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionTratamientos.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller

@@ -95,6 +95,8 @@ public class EdicionRecomendacionesController implements Initializable {
         }
 
         listaRecomendaciones.add(nuevaRecomendacion);
+        
+        cargarDatos();
 
         txtNuevaRecomendacion.clear();
 

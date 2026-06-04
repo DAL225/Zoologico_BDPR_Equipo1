@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.zoologico_bdpr_equipo1;
 
 import Modelo.Habitat;
@@ -15,7 +11,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,35 +26,19 @@ import javafx.stage.Stage;
  */
 public class IntendenteController implements Initializable {
 
-    @FXML
-    private TableView<Habitat> tblHabitats;
-
-    @FXML
-    private TableColumn<Habitat, Integer> colId;
-
-    @FXML
-    private TableColumn<Habitat, String> colNombre;
-
-    @FXML
-    private TableColumn<Habitat, String> colTipo;
-
-    @FXML
-    private TableColumn<Habitat, String> colClima;
-
-    @FXML
-    private TableColumn<Habitat, Integer> colNivelLimpieza;
-
-    @FXML
-    private TableColumn<Habitat, Integer> colCapacidad;
-
-    @FXML
-    private Button btnCerrarSesion;
+    @FXML private TableView<Habitat> tblHabitats;
+    @FXML private TableColumn<Habitat, Integer> colId;
+    @FXML private TableColumn<Habitat, String> colNombre;
+    @FXML private TableColumn<Habitat, String> colTipo;
+    @FXML private TableColumn<Habitat, String> colClima;
+    @FXML private TableColumn<Habitat, Integer> colNivelLimpieza;
+    @FXML private TableColumn<Habitat, Integer> colCapacidad;
+    @FXML private Button btnCerrarSesion;
 
     private HabitatDAO habitatDao;
+    private ObservableList<Habitat> listaHabitats; // Atributo global de la clase
 
-    private ObservableList<Habitat> listaHabitats;
-
-    private int idEmpleado; // 👈 aquí guardas el id del intendente
+    private int idEmpleado; 
     private IntendenteDAO intendenteDao;
 
     /**
@@ -75,7 +54,6 @@ public class IntendenteController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         listaHabitats = FXCollections.observableArrayList();
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -92,25 +70,35 @@ public class IntendenteController implements Initializable {
      * Carga solo los hábitats asignados al intendente.
      */
     private void cargarHabitats() {
-
         try {
             intendenteDao = new IntendenteDAOImpl();
             habitatDao = new HabitatDAOImpl();
-            listaHabitats.clear();
+            
+            listaHabitats.clear(); // Limpiamos el atributo global
             
             List<Integer> listaIds = intendenteDao.obtenerIdsHabitats(idEmpleado);
             
-            if(listaIds == null || listaIds.isEmpty()){
-                mostrarAlerta("Error", "No hay habitats para mostrar",Alert.AlertType.ERROR);
+            if (listaIds == null || listaIds.isEmpty()) {
+                mostrarAlerta("Información", "No tienes hábitats asignados a tu cargo actualmente.", Alert.AlertType.INFORMATION);
                 return;
             }
-            List<Habitat> listaHabitats = habitatDao.obtenerHabitats(listaIds);
             
-            listaHabitats.addAll(listaHabitats);
+            // SOLUCIÓN 1: Cambiar el nombre de la variable local para que no opaque al atributo global
+            List<Habitat> habitatsConsultados = habitatDao.obtenerHabitats(listaIds);
+            
+            if (habitatsConsultados == null || habitatsConsultados.isEmpty()) {
+                mostrarAlerta("Vacío", "No se encontraron los datos de los hábitats asignados.", Alert.AlertType.INFORMATION);
+                return;
+            }
+            
+            // Agregamos los datos consultados a la lista observable global conectada al TableView
+            listaHabitats.addAll(habitatsConsultados);
+
+            System.out.println("-> Hábitats cargados con éxito para el intendente: " + listaHabitats.size());
 
         } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudieron cargar los hábitats",Alert.AlertType.ERROR);
             e.printStackTrace();
+            mostrarAlerta("Error", "No se pudieron cargar los hábitats", Alert.AlertType.ERROR);
         }
     }
 
@@ -120,31 +108,23 @@ public class IntendenteController implements Initializable {
     @FXML
     private void cerrarSesion() {
         try {
-            // Cargar la vista del login
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/scenes/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/login.fxml"));
             Parent root = loader.load();
 
-            // Crear nueva ventana
             Stage loginStage = new Stage();
             loginStage.setTitle("Iniciar Sesión");
             loginStage.setScene(new Scene(root));
             loginStage.show();
 
-            // Cerrar ventana actual
             Stage stageActual = (Stage) btnCerrarSesion.getScene().getWindow();
             stageActual.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    /**
-     * Muestra alertas.
-     */
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-
         Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
         alert.setHeaderText(null);

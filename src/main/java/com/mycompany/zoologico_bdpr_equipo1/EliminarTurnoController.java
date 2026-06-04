@@ -78,7 +78,6 @@ public class EliminarTurnoController implements Initializable {
             subPnlCamposElim.setVisible(true);
 
         } else {
-
             mostrarAlerta("Error","No existe un turno con ese ID",Alert.AlertType.ERROR);
         }
     }
@@ -105,7 +104,6 @@ public class EliminarTurnoController implements Initializable {
             mostrarAlerta("Error","No se pudo eliminar el turno",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

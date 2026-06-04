@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -83,7 +84,6 @@ public class ListaAnimalesController implements Initializable {
      */
     public void setListaIdAnimales(List<Integer> listaIdAnimales) {
         this.listaIdAnimales = listaIdAnimales;
-        cargarDatos(this.lista);
     }
 
     @Override
@@ -98,7 +98,6 @@ public class ListaAnimalesController implements Initializable {
         colEstadoSalud.setCellValueFactory(new PropertyValueFactory<>("estadoSalud"));
         this.lista = FXCollections.observableArrayList();
         tblAnimales.setItems(lista);
-        this.cargarDatos(this.lista);
         configurarColumnaRecomendaciones();
         configurarColumnaTratamientos();
     }
@@ -225,33 +224,34 @@ public class ListaAnimalesController implements Initializable {
     /**
      * Carga de datos a la tabla.
      */
-    private void cargarDatos(ObservableList<Animal> list) {
-        list.clear();
-        list.add(new Animal());
+    private void cargarDatos() {
+        ObservableList<Animal> lista = FXCollections.observableArrayList();
+    
+
         try {
             animalDao = new AnimalDAOImpl();
+        
+            // Si la lista es nula O está vacía, significa que queremos ver TODO el zoológico
             if (listaIdAnimales == null) {
-                list.addAll(animalDao.obtenerTodosAnimales());
-                System.out.println("ListaAnimales: "+animalDao.obtenerTodosAnimales().size());
-                
-                System.out.println(list);
+                lista.addAll(animalDao.obtenerTodosAnimales());
             } else {
-                list.addAll(animalDao.obtenerAnimales(listaIdAnimales));
+                // Si tiene IDs, solo los animales de ese cuidador/veterinario
+                lista.addAll(animalDao.obtenerAnimales(listaIdAnimales));
             }
-            if (list == null || list.isEmpty()) {
-                mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+        
+            if (lista.isEmpty()) {
+                mostrarAlerta("Vacío", "No hay elementos para mostrar.", Alert.AlertType.INFORMATION);
+                tblAnimales.setItems(lista); 
                 return;
             }
+            tblAnimales.setItems(lista);
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
+            mostrarAlerta("Error", "Error al cargar los datos de los animales", Alert.AlertType.ERROR);
         }
-
-        tblAnimales.setItems(list);
-        System.out.println("ListaAnimales: "+list.size());
     }
-
+    
     /**
      * Muestra una alerta con el título, mensaje y tipo especificados.
      *
@@ -267,3 +267,4 @@ public class ListaAnimalesController implements Initializable {
         a.showAndWait();
     }
 }
+    

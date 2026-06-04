@@ -16,6 +16,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 /**
  *
@@ -39,55 +41,74 @@ public class VeterinarioDAOImpl extends BaseDAOOracle implements VeterinarioDAO 
      * @throws Exception
      */
     @Override
-public boolean agregarVeterinario(Veterinario veterinarioAux) throws Exception {
-    String sql = "{CALL sp_agregar_veterinario(?,?,?,?,?,?,?)}";
+    public boolean agregarVeterinario(Veterinario veterinarioAux) throws Exception {
 
-    try (Connection con = getConexion();
-         CallableStatement cstmt = con.prepareCall(sql)) {
+        String sql = "{CALL sp_agregar_veterinario(?,?,?,?,?,?,?)}";
 
-        cstmt.setString(1, veterinarioAux.getNombre());
-        cstmt.setString(2, veterinarioAux.getUsuario());
-        cstmt.setString(3, veterinarioAux.getPassword());
+        try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
 
-        cstmt.registerOutParameter(4, java.sql.Types.NUMERIC);
+            cstmt.setString(1, veterinarioAux.getNombre());
+            cstmt.setString(2, veterinarioAux.getUsuario());
+            cstmt.setString(3, veterinarioAux.getPassword());
 
-        Array idsTurnos = con.createArrayOf(
-                "NUMBER",
-                veterinarioAux.getTurnos() == null
-                        ? new Object[]{}
-                        : veterinarioAux.getTurnos().stream()
-                                .map(Turno::getId)
-                                .toArray()
-        );
-        cstmt.setArray(5, idsTurnos);
+            cstmt.registerOutParameter(4, java.sql.Types.NUMERIC);
 
-        Array idsAnimales = con.createArrayOf(
-                "NUMBER",
-                veterinarioAux.getIdsAnimales() == null
-                        ? new Object[]{}
-                        : veterinarioAux.getIdsAnimales().toArray()
-        );
-        cstmt.setArray(6, idsAnimales);
+            OracleConnection ocon = con.unwrap(OracleConnection.class);
 
-        Array especialidades = con.createArrayOf(
-                "VARCHAR",
-                veterinarioAux.getEspecialidades() == null
-                        ? new Object[]{}
-                        : veterinarioAux.getEspecialidades().toArray()
-        );
-        cstmt.setArray(7, especialidades);
+            // TURNOS
+            ArrayDescriptor descTurnos
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", ocon);
 
-        cstmt.execute();
+            ARRAY arrTurnos = new ARRAY(
+                    descTurnos,
+                    ocon,
+                    veterinarioAux.getTurnos() == null
+                    ? new Integer[]{}
+                    : veterinarioAux.getTurnos().stream()
+                            .map(Turno::getId)
+                            .toArray(Integer[]::new)
+            );
 
-        veterinarioAux.setId(cstmt.getInt(4));
-        return true;
+            cstmt.setArray(5, arrTurnos);
 
-    } catch (Exception e) {
-        throw new Exception("Error al insertar el Veterinario: " + e.getMessage());
+            // ANIMALES
+            ArrayDescriptor descAnimales
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", ocon);
+
+            ARRAY arrAnimales = new ARRAY(
+                    descAnimales,
+                    ocon,
+                    veterinarioAux.getIdsAnimales() == null
+                    ? new Integer[]{}
+                    : veterinarioAux.getIdsAnimales().toArray(new Integer[0])
+            );
+
+            cstmt.setArray(6, arrAnimales);
+
+            // ESPECIALIDADES
+            ArrayDescriptor descEsp
+                    = ArrayDescriptor.createDescriptor("TABLA_ESPECIALIDADES_TYP", ocon);
+
+            ARRAY arrEsp = new ARRAY(
+                    descEsp,
+                    ocon,
+                    veterinarioAux.getEspecialidades() == null
+                    ? new String[]{}
+                    : veterinarioAux.getEspecialidades().toArray(new String[0])
+            );
+
+            cstmt.setArray(7, arrEsp);
+
+            cstmt.execute();
+
+            veterinarioAux.setId(cstmt.getInt(4));
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error al insertar el Veterinario: " + e.getMessage(), e);
+        }
     }
-}
-    
-    
+
     /**
      * Modifica los datos de un veterinario con los de un parametro
      *
@@ -96,50 +117,63 @@ public boolean agregarVeterinario(Veterinario veterinarioAux) throws Exception {
      * @throws Exception
      */
     @Override
-public boolean modificarVeterinario(Veterinario veterinarioAux) throws Exception {
-    try (Connection con = getConexion();
-         CallableStatement cs = con.prepareCall(
-             "{CALL sp_modificar_veterinario(?,?,?,?,?,?,?)}")) {
+    public boolean modificarVeterinario(Veterinario veterinarioAux) throws Exception {
 
-        cs.setInt(1, veterinarioAux.getId());
-        cs.setString(2, veterinarioAux.getNombre());
-        cs.setString(3, veterinarioAux.getUsuario());
-        cs.setString(4, veterinarioAux.getPassword());
+        try (Connection con = getConexion(); CallableStatement cs = con.prepareCall(
+                "{CALL sp_modificar_veterinario(?,?,?,?,?,?,?)}")) {
 
-        OracleConnection oracleCon = con.unwrap(OracleConnection.class);
+            cs.setInt(1, veterinarioAux.getId());
+            cs.setString(2, veterinarioAux.getNombre());
+            cs.setString(3, veterinarioAux.getUsuario());
+            cs.setString(4, veterinarioAux.getPassword());
 
-        Integer[] idsTurnos = veterinarioAux.getTurnos() == null
-                ? new Integer[0]
-                : veterinarioAux.getTurnos()
-                        .stream()
-                        .map(Turno::getId)
-                        .toArray(Integer[]::new);
+            OracleConnection oracleCon = con.unwrap(OracleConnection.class);
 
-        Integer[] idsAnimales = veterinarioAux.getIdsAnimales() == null
-                ? new Integer[0]
-                : veterinarioAux.getIdsAnimales().toArray(new Integer[0]);
+            // ===================== TURNOS =====================
+            Integer[] idsTurnos = (veterinarioAux.getTurnos() == null)
+                    ? new Integer[0]
+                    : veterinarioAux.getTurnos()
+                            .stream()
+                            .map(Turno::getId)
+                            .toArray(Integer[]::new);
 
-        String[] especialidades = veterinarioAux.getEspecialidades() == null
-                ? new String[0]
-                : veterinarioAux.getEspecialidades().toArray(new String[0]);
+            ArrayDescriptor descTurnos
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
-        Array turnosArray = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
-        Array animalesArray = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsAnimales);
-        Array especialidadesArray = oracleCon.createOracleArray("TABLA_ESPECIALIDADES_TYP", especialidades);
+            ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
 
-        cs.setArray(5, turnosArray);
-        cs.setArray(6, animalesArray);
-        cs.setArray(7, especialidadesArray);
+            // ===================== ANIMALES =====================
+            Integer[] idsAnimales = (veterinarioAux.getIdsAnimales() == null)
+                    ? new Integer[0]
+                    : veterinarioAux.getIdsAnimales().toArray(new Integer[0]);
 
-        cs.execute();
-        return true;
+            ArrayDescriptor descAnimales
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
-    } catch (Exception e) {
-        throw new Exception("Error al modificar el veterinario: " + e.getMessage(), e);
+            ARRAY arrayAnimales = new ARRAY(descAnimales, oracleCon, idsAnimales);
+
+            // ===================== ESPECIALIDADES =====================
+            String[] especialidades = (veterinarioAux.getEspecialidades() == null)
+                    ? new String[0]
+                    : veterinarioAux.getEspecialidades().toArray(new String[0]);
+
+            ArrayDescriptor descEsp
+                    = ArrayDescriptor.createDescriptor("TABLA_ESPECIALIDADES_TYP", oracleCon);
+
+            ARRAY arrayEspecialidades = new ARRAY(descEsp, oracleCon, especialidades);
+
+            // SET PARAMS
+            cs.setArray(5, arrayTurnos);
+            cs.setArray(6, arrayAnimales);
+            cs.setArray(7, arrayEspecialidades);
+
+            cs.execute();
+            return true;
+
+        } catch (Exception e) {
+            throw new Exception("Error al modificar el veterinario: " + e.getMessage(), e);
+        }
     }
-}
-
-
 
     /**
      * Obtiene un veterinario segun su id.
@@ -149,73 +183,72 @@ public boolean modificarVeterinario(Veterinario veterinarioAux) throws Exception
      * @throws Exception
      */
     @Override
-public Veterinario obtenerVeterinario(int id) throws Exception {
-    try (Connection con = getConexion();
-         CallableStatement cs = con.prepareCall(
-             "{CALL sp_obtener_veterinario(?,?,?,?,?,?,?,?)}")) {
+    public Veterinario obtenerVeterinario(int id) throws Exception {
+        try (Connection con = getConexion(); CallableStatement cs = con.prepareCall(
+                "{CALL sp_obtener_veterinario(?,?,?,?,?,?,?,?)}")) {
 
-        cs.setInt(1, id);
+            cs.setInt(1, id);
 
-        cs.registerOutParameter(2, Types.INTEGER);
-        cs.registerOutParameter(3, Types.VARCHAR);
-        cs.registerOutParameter(4, Types.VARCHAR);
-        cs.registerOutParameter(5, Types.VARCHAR);
+            cs.registerOutParameter(2, Types.INTEGER);
+            cs.registerOutParameter(3, Types.VARCHAR);
+            cs.registerOutParameter(4, Types.VARCHAR);
+            cs.registerOutParameter(5, Types.VARCHAR);
 
-        cs.registerOutParameter(6, OracleTypes.CURSOR);
-        cs.registerOutParameter(7, OracleTypes.CURSOR);
-        cs.registerOutParameter(8, OracleTypes.CURSOR);
+            cs.registerOutParameter(6, OracleTypes.CURSOR);
+            cs.registerOutParameter(7, OracleTypes.CURSOR);
+            cs.registerOutParameter(8, OracleTypes.CURSOR);
 
-        cs.execute();
+            cs.execute();
 
-        Veterinario veterinario = new Veterinario();
-        veterinario.setId(cs.getInt(2));
-        veterinario.setNombre(cs.getString(3));
-        veterinario.setUsuario(cs.getString(4));
-        veterinario.setPassword(cs.getString(5));
+            Veterinario veterinario = new Veterinario();
+            veterinario.setId(cs.getInt(2));
+            veterinario.setNombre(cs.getString(3));
+            veterinario.setUsuario(cs.getString(4));
+            veterinario.setPassword(cs.getString(5));
 
-        veterinario.setTurnos(new ArrayList<>());
-        veterinario.setIdsAnimales(new ArrayList<>());
-        veterinario.setEspecialidades(new ArrayList<>());
+            veterinario.setTurnos(new ArrayList<>());
+            veterinario.setIdsAnimales(new ArrayList<>());
+            veterinario.setEspecialidades(new ArrayList<>());
 
-        try (ResultSet rsTurnos = (ResultSet) cs.getObject(6)) {
-            while (rsTurnos.next()) {
-                Turno turno = new Turno();
+            try (ResultSet rsTurnos = (ResultSet) cs.getObject(6)) {
+                while (rsTurnos.next()) {
+                    Turno turno = new Turno();
 
-                turno.setId(rsTurnos.getInt("id_turno"));
-                turno.setFecha(rsTurnos.getDate("fecha").toLocalDate());
+                    turno.setId(rsTurnos.getInt("id_turno"));
+                    turno.setFecha(rsTurnos.getDate("fecha").toLocalDate());
 
-                Timestamp inicio = rsTurnos.getTimestamp("hora_inicio");
-                if (inicio != null) {
-                    turno.setHoraInicio(inicio.toLocalDateTime().toLocalTime());
+                    Timestamp inicio = rsTurnos.getTimestamp("hora_inicio");
+                    if (inicio != null) {
+                        turno.setHoraInicio(inicio.toLocalDateTime().toLocalTime());
+                    }
+
+                    Timestamp fin = rsTurnos.getTimestamp("hora_fin");
+                    if (fin != null) {
+                        turno.setHoraFin(fin.toLocalDateTime().toLocalTime());
+                    }
+
+                    veterinario.getTurnos().add(turno);
                 }
+            }
 
-                Timestamp fin = rsTurnos.getTimestamp("hora_fin");
-                if (fin != null) {
-                    turno.setHoraFin(fin.toLocalDateTime().toLocalTime());
+            try (ResultSet rsAnimales = (ResultSet) cs.getObject(7)) {
+                while (rsAnimales.next()) {
+                    veterinario.getIdsAnimales().add(rsAnimales.getInt(1));
                 }
-
-                veterinario.getTurnos().add(turno);
             }
-        }
 
-        try (ResultSet rsAnimales = (ResultSet) cs.getObject(7)) {
-            while (rsAnimales.next()) {
-                veterinario.getIdsAnimales().add(rsAnimales.getInt(1));
+            try (ResultSet rsEspecialidades = (ResultSet) cs.getObject(8)) {
+                while (rsEspecialidades.next()) {
+                    veterinario.getEspecialidades().add(rsEspecialidades.getString(1));
+                }
             }
+
+            return veterinario;
+
+        } catch (Exception e) {
+            throw new Exception("Error al obtener el veterinario: " + e.getMessage(), e);
         }
-
-        try (ResultSet rsEspecialidades = (ResultSet) cs.getObject(8)) {
-            while (rsEspecialidades.next()) {
-                veterinario.getEspecialidades().add(rsEspecialidades.getString(1));
-            }
-        }
-
-        return veterinario;
-
-    } catch (Exception e) {
-        throw new Exception("Error al obtener el veterinario: " + e.getMessage(), e);
     }
-}
 
     /**
      * Recorre todos los cuidadores y aquellos que en su lista idAnimales tengan
@@ -226,17 +259,16 @@ public Veterinario obtenerVeterinario(int id) throws Exception {
      * @throws Exception
      */
     @Override
-public boolean eliminarIdAnimal(int idAnimal) throws Exception {
-    try (Connection con = getConexion();
-         CallableStatement cs = con.prepareCall( "{CALL sp_eliminar_id_animal_veterinarios(?)}")) {
+    public boolean eliminarIdAnimal(int idAnimal) throws Exception {
+        try (Connection con = getConexion(); CallableStatement cs = con.prepareCall("{CALL sp_eliminar_id_animal_veterinarios(?)}")) {
 
-        cs.setInt(1, idAnimal);
-        cs.execute();
+            cs.setInt(1, idAnimal);
+            cs.execute();
 
-        return true;
+            return true;
 
-    } catch (Exception e) {
-        throw new Exception("Error al eliminar el ID del animal en los veterinarios: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new Exception("Error al eliminar el ID del animal en los veterinarios: " + e.getMessage(), e);
+        }
     }
-}
 }

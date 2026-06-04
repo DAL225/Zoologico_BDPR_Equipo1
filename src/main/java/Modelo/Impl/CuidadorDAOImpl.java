@@ -18,6 +18,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 /**
  *
@@ -42,6 +44,7 @@ public class CuidadorDAOImpl extends BaseDAOOracle implements CuidadorDAO {
      */
     @Override
     public boolean agregarCuidador(Cuidador cuidadorAux) throws Exception {
+
         String sql = "{CALL sp_agregar_cuidador(?, ?, ?, ?, ?)}";
 
         try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
@@ -52,17 +55,30 @@ public class CuidadorDAOImpl extends BaseDAOOracle implements CuidadorDAO {
 
             OracleConnection oracleCon = con.unwrap(OracleConnection.class);
 
-            Integer[] idsTurnos = cuidadorAux.getTurnos() == null
+            // turnos
+            Integer[] idsTurnos = (cuidadorAux.getTurnos() == null)
                     ? new Integer[0]
-                    : cuidadorAux.getTurnos().stream().map(Turno::getId).toArray(Integer[]::new);
+                    : cuidadorAux.getTurnos()
+                            .stream()
+                            .map(Turno::getId)
+                            .toArray(Integer[]::new);
 
-            Integer[] idsAnimales = cuidadorAux.getIdsAnimales() == null
+            ArrayDescriptor descTurnos
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
+
+            ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
+
+            // ids animales
+            Integer[] idsAnimales = (cuidadorAux.getIdsAnimales() == null)
                     ? new Integer[0]
                     : cuidadorAux.getIdsAnimales().toArray(new Integer[0]);
 
-            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
-            Array arrayAnimales = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsAnimales);
+            ArrayDescriptor descAnimales
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
+            ARRAY arrayAnimales = new ARRAY(descAnimales, oracleCon, idsAnimales);
+
+            // parametros
             cstmt.setArray(4, arrayTurnos);
             cstmt.setArray(5, arrayAnimales);
 
@@ -70,11 +86,12 @@ public class CuidadorDAOImpl extends BaseDAOOracle implements CuidadorDAO {
             return true;
 
         } catch (SQLException e) {
+
             if (e.getErrorCode() == 20001) {
                 throw new Exception("El nombre de usuario ya se encuentra registrado.");
             }
 
-            throw new Exception("Error al insertar el Cuidador: " + e.getMessage());
+            throw new Exception("Error al insertar el Cuidador: " + e.getMessage(), e);
         }
     }
 
@@ -88,6 +105,7 @@ public class CuidadorDAOImpl extends BaseDAOOracle implements CuidadorDAO {
      */
     @Override
     public boolean modificarCuidador(Cuidador cuidadorAux) throws Exception {
+
         String sql = "{CALL sp_modificar_cuidador(?, ?, ?, ?, ?, ?)}";
 
         try (Connection con = getConexion(); CallableStatement cstmt = con.prepareCall(sql)) {
@@ -99,17 +117,30 @@ public class CuidadorDAOImpl extends BaseDAOOracle implements CuidadorDAO {
 
             OracleConnection oracleCon = con.unwrap(OracleConnection.class);
 
-            Integer[] idsTurnos = cuidadorAux.getTurnos() == null
+            // turnos
+            Integer[] idsTurnos = (cuidadorAux.getTurnos() == null)
                     ? new Integer[0]
-                    : cuidadorAux.getTurnos().stream().map(Turno::getId).toArray(Integer[]::new);
+                    : cuidadorAux.getTurnos()
+                            .stream()
+                            .map(Turno::getId)
+                            .toArray(Integer[]::new);
 
-            Integer[] idsAnimales = cuidadorAux.getIdsAnimales() == null
+            ArrayDescriptor descTurnos
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
+
+            ARRAY arrayTurnos = new ARRAY(descTurnos, oracleCon, idsTurnos);
+
+            // ids animales
+            Integer[] idsAnimales = (cuidadorAux.getIdsAnimales() == null)
                     ? new Integer[0]
                     : cuidadorAux.getIdsAnimales().toArray(new Integer[0]);
 
-            Array arrayTurnos = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsTurnos);
-            Array arrayAnimales = oracleCon.createOracleArray("TABLA_ENTEROS_TYP", idsAnimales);
+            ArrayDescriptor descAnimales
+                    = ArrayDescriptor.createDescriptor("TABLA_ENTEROS_TYP", oracleCon);
 
+            ARRAY arrayAnimales = new ARRAY(descAnimales, oracleCon, idsAnimales);
+
+            // parametros
             cstmt.setArray(5, arrayTurnos);
             cstmt.setArray(6, arrayAnimales);
 
@@ -117,11 +148,12 @@ public class CuidadorDAOImpl extends BaseDAOOracle implements CuidadorDAO {
             return true;
 
         } catch (SQLException e) {
+
             if (e.getErrorCode() == 20001) {
                 throw new Exception("El nombre de usuario ya se encuentra registrado por otro empleado.");
             }
 
-            throw new Exception("Error al modificar el Cuidador: " + e.getMessage());
+            throw new Exception("Error al modificar el Cuidador: " + e.getMessage(), e);
         }
     }
 

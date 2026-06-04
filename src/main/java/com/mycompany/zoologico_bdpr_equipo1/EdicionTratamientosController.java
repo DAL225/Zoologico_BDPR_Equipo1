@@ -87,7 +87,8 @@ public class EdicionTratamientosController implements Initializable {
         }
 
         listaTratamientos.add(nuevoTratamiento);
-
+        
+        cargarDatos();
         txtNuevoTratamiento.clear();
     }
 

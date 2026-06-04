@@ -39,25 +39,31 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     @Override
     public Habitat obtenerHabitat(int id) throws Exception {
         Document doc = this.DAO.obtenerDocumento(id, this.DAO.colHabitats);
+
+        // Si el hábitat no existe en MongoDB
+        if (doc == null) {
+            return null;
+        }
+
+        // Si el documento existe, es seguro mapear sus propiedades
         Habitat habitat = new Habitat();
         habitat.setId(id);
         habitat.setNombre(doc.getString("nombre"));
         habitat.setTipo(doc.getString("tipo"));
         habitat.setClima(doc.getString("clima"));
         habitat.setNivelLimpieza(doc.getString("nivel_limpieza"));
-        if (doc.getInteger("capacidad_animales") != null){
+
+        if (doc.getInteger("capacidad_animales") != null) {
             habitat.setCapacidadAnimales(doc.getInteger("capacidad_animales"));
         }
-        
-        //Logica obtencion habitat/mongo
-        
+
         return habitat;
     }
-    
-    
+
     /**
-     * Obtiene la lista de habitats, segun la lista de ids habitat que tiene
-     * un intendente.
+     * Obtiene la lista de habitats, segun la lista de ids habitat que tiene un
+     * intendente.
+     *
      * @param ids lista de ids que tiene un intendente
      * @returnlista de habitats
      * @throws Exception 
@@ -66,9 +72,20 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     public List<Habitat> obtenerHabitats(List<Integer> ids) throws Exception {
         List<Habitat> habitats = new ArrayList<>();
         try {
-
+            if (ids == null || ids.isEmpty()) {
+                return habitats;
+            }
+            
+            // Recorremos la lista de IDs solicitada
+            for (Integer id : ids) {
+                // Reutilizamos el método de mapeo de la misma clase para traer cada Hábitat limpio
+                Habitat habitatAux = this.obtenerHabitat(id);
+                if (habitatAux != null) {
+                    habitats.add(habitatAux);
+                }
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al obtener lista filtrada de hábitats: " + e.getMessage());
         }
 
         return habitats;
