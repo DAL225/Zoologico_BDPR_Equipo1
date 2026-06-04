@@ -72,9 +72,20 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     public List<Habitat> obtenerHabitats(List<Integer> ids) throws Exception {
         List<Habitat> habitats = new ArrayList<>();
         try {
-
+            if (ids == null || ids.isEmpty()) {
+                return habitats;
+            }
+            
+            // Recorremos la lista de IDs solicitada
+            for (Integer id : ids) {
+                // Reutilizamos el método de mapeo de la misma clase para traer cada Hábitat limpio
+                Habitat habitatAux = this.obtenerHabitat(id);
+                if (habitatAux != null) {
+                    habitats.add(habitatAux);
+                }
+            }
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception("Error al obtener lista filtrada de hábitats: " + e.getMessage());
         }
 
         return habitats;

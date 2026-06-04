@@ -97,7 +97,6 @@ public class ListaAnimalesController implements Initializable  {
 
         configurarColumnaRecomendaciones();
         configurarColumnaTratamientos();
-        cargarDatos();
     }
     
     /**
@@ -223,28 +222,32 @@ public class ListaAnimalesController implements Initializable  {
      * Carga de datos a la tabla.
      */
     private void cargarDatos() {
-        ObservableList<Animal> lista = FXCollections.observableArrayList();
+    ObservableList<Animal> lista = FXCollections.observableArrayList();
 
-        try {
-            animalDao = new AnimalDAOImpl();
-            if (listaIdAnimales == null) {
-                lista.addAll(animalDao.obtenerTodosAnimales());
-                
-            } else {
-                lista.addAll(animalDao.obtenerAnimales(listaIdAnimales));
-            }
-            if (lista.isEmpty()) {
-                mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
-                return;
-            }
-
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
+    try {
+        animalDao = new AnimalDAOImpl();
+        
+        // Si la lista es nula O está vacía, significa que queremos ver TODO el zoológico
+        if (listaIdAnimales == null) {
+            lista.addAll(animalDao.obtenerTodosAnimales());
+        } else {
+            // Si tiene IDs, solo los animales de ese cuidador/veterinario
+            lista.addAll(animalDao.obtenerAnimales(listaIdAnimales));
+        }
+        
+        if (lista.isEmpty()) {
+            mostrarAlerta("Vacío", "No hay elementos para mostrar.", Alert.AlertType.INFORMATION);
+            tblAnimales.setItems(lista); 
+            return;
         }
 
-        tblAnimales.setItems(lista);
+    } catch (Exception e) {
+        e.printStackTrace();
+        mostrarAlerta("Error", "Error al cargar los datos de los animales", Alert.AlertType.ERROR);
     }
 
+    tblAnimales.setItems(lista);
+}
     /**
      * Muestra una alerta con el título, mensaje y tipo especificados.
      *

@@ -143,7 +143,8 @@ public boolean modificarIntendente(Intendente intendenteAux) throws Exception {
         cstmt.setArray(5, arrayTurnos);
         cstmt.setArray(6, arrayHabitats);
 
-        return cstmt.executeUpdate() >= 0;
+        cstmt.execute();
+        return true;
 
     } catch (Exception e) {
         throw new Exception("Error al modificar el Intendente: " + e.getMessage(), e);

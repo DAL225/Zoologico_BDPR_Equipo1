@@ -70,8 +70,6 @@ public class ListaHabitatsController implements Initializable {
         colClima.setCellValueFactory(new PropertyValueFactory<>("clima"));
         colNivelLimpieza.setCellValueFactory(new PropertyValueFactory<>("nivelLimpieza"));
         colCapacidad.setCellValueFactory(new PropertyValueFactory<>("capacidadAnimales"));
-
-        cargarDatos();
     }
 
     @FXML
@@ -98,6 +96,7 @@ public class ListaHabitatsController implements Initializable {
             
             if (lista.isEmpty()) {
                 mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
+                tblHabitats.setItems(lista);
                 return;
             }
 

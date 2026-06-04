@@ -133,6 +133,7 @@ public class EdicionAnimalesController implements Initializable {
                 this.listaIdAnimales.add(idAgregar);
                 mostrarAlerta("Exito", "Elemento agregado correctamente", Alert.AlertType.INFORMATION);
                 cargarDatos();
+                return;
             }
             mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
         }catch(Exception e){
