@@ -101,11 +101,9 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     public Integer obtenerIdDisponible() throws Exception {
         Document doc = DAO.colHabitats.find().sort(descending("_id")).first();
         if (doc != null){
-            if (doc.getObjectId("_id") != null){
-                ObjectId id = doc.getObjectId("_id");
-                String idS = id.toString();
-                int idInt = parseInt(idS);
-                return idInt;
+            if (doc.getInteger("_id") != null){
+                int idInt = doc.getInteger("_id");
+                return idInt+1;
             } else {
                 return 1;
             }

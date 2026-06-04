@@ -142,6 +142,7 @@ public class RegistrarAnimalController implements Initializable {
 
         } catch (Exception e) {
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.INFORMATION);
+            System.out.println(e.getMessage());
         }
     }
 
