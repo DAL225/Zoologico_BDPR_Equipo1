@@ -101,7 +101,7 @@ public class IntendenteController implements Initializable {
             List<Integer> listaIds = intendenteDao.obtenerIdsHabitats(idEmpleado);
             
             if(listaIds == null || listaIds.isEmpty()){
-                mostrarAlerta("Error", "No hay habitats para mostrar",Alert.AlertType.ERROR);
+                mostrarAlerta("Error", "No hay habitats para mostrar",Alert.AlertType.INFORMATION);
                 return;
             }
             List<Habitat> listaHabitats = habitatDao.obtenerHabitats(listaIds);
@@ -110,7 +110,6 @@ public class IntendenteController implements Initializable {
 
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudieron cargar los hábitats",Alert.AlertType.ERROR);
-            e.printStackTrace();
         }
     }
 
@@ -136,7 +135,7 @@ public class IntendenteController implements Initializable {
             stageActual.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

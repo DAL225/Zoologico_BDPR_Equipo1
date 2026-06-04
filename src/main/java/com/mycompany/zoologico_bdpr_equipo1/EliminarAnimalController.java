@@ -114,7 +114,6 @@ public class EliminarAnimalController implements Initializable {
             mostrarAlerta("Error","No se pudo eliminar el animal",Alert.AlertType.ERROR);
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error",e.getMessage(),Alert.AlertType.ERROR);
         }
     }

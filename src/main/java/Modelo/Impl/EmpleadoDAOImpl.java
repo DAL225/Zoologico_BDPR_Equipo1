@@ -267,7 +267,7 @@ public class EmpleadoDAOImpl extends BaseDAOOracle implements EmpleadoDAO {
                 empleado.setNombre(rs.getString("nombre"));
                 empleado.setUsuario(rs.getString("usuario"));
                 empleado.setPassword(rs.getString("password"));
-                // ← Parsear y asignar turnos
+                //Parseo y asignacion de turnos
                 List<Turno> turnos = new ArrayList<>();
                 if (strTurnos != null && !strTurnos.isEmpty()) {
                     for (String idStr : strTurnos.split(",")) {

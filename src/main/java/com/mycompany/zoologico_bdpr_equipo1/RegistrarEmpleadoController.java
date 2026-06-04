@@ -170,7 +170,7 @@ public class RegistrarEmpleadoController implements Initializable {
         
         System.out.println("Agregar turnos");
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -195,7 +195,7 @@ public class RegistrarEmpleadoController implements Initializable {
         
         System.out.println("Agregar animales");
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -220,7 +220,7 @@ public class RegistrarEmpleadoController implements Initializable {
         
         System.out.println("Agregar especialidades");
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -230,7 +230,7 @@ public class RegistrarEmpleadoController implements Initializable {
     @FXML
     private void agregarHabitats(ActionEvent event) {
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionAnimales.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionHabitats.fxml"));
         Parent vista = loader.load();
 
         // Obtener controller
@@ -245,7 +245,7 @@ public class RegistrarEmpleadoController implements Initializable {
         
         System.out.println("Agregar habitats");
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -348,7 +348,6 @@ public class RegistrarEmpleadoController implements Initializable {
             
             
         }catch(Exception e){
-            e.printStackTrace();
             mostrarAlerta("Error", "Ocurrio un error", Alert.AlertType.INFORMATION);
             System.out.println(e.getMessage());
         }

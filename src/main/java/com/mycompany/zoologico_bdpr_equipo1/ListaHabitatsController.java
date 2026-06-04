@@ -96,13 +96,12 @@ public class ListaHabitatsController implements Initializable {
                 lista.addAll(habitatDao.obtenerHabitats(listaIdHabitats));
             }
             
-            if (lista == null || lista.isEmpty()) {
+            if (lista.isEmpty()) {
                 mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
                 return;
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
         }
 

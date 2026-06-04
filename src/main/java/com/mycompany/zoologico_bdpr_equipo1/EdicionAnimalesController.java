@@ -136,7 +136,6 @@ public class EdicionAnimalesController implements Initializable {
             }
             mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
         }catch(Exception e){
-            e.printStackTrace();
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
@@ -195,7 +194,6 @@ public class EdicionAnimalesController implements Initializable {
             listaAnimales.addAll(animalDao.obtenerAnimales(listaIdAnimales));
 
         } catch (Exception e) {
-            e.printStackTrace();
             this.mostrarAlerta("Error", "Error al obtener datos", Alert.AlertType.NONE);
         }
 

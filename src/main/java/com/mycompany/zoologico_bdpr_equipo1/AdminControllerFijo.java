@@ -62,7 +62,7 @@ public class AdminControllerFijo {
             stageActual.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -168,7 +168,6 @@ public class AdminControllerFijo {
                 subPnl.setVisible(true);
 
             } catch (Exception e) {
-                e.printStackTrace();
                 System.out.println("Error al cargar el panel: " + archivoFXML);
             }
         }

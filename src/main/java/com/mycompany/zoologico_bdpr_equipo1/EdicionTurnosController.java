@@ -125,7 +125,6 @@ public class EdicionTurnosController implements Initializable {
             }
             mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
         }catch(Exception e){
-            e.printStackTrace();
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }

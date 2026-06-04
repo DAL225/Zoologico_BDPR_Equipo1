@@ -20,15 +20,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-//        try {
-//            EmpleadoDAOImpl dao = new EmpleadoDAOImpl();
-//
-//            System.out.println("Conexión exitosa");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        scene = new Scene(loadFXML("admin"));
+        scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
         stage.show();
     }

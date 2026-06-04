@@ -142,7 +142,6 @@ public class EdicionHabitatsController implements Initializable {
             }
             mostrarAlerta("Fallo", "No se encontro el elemento", Alert.AlertType.INFORMATION);
         }catch(Exception e){
-            e.printStackTrace();
             mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
@@ -208,7 +207,6 @@ public class EdicionHabitatsController implements Initializable {
             listaHabitats.addAll(habitatDao.obtenerHabitats(listaidHabitats));
             
         }catch(Exception e){
-            e.printStackTrace();
             this.mostrarAlerta("Error", "Error al obtener datos", Alert.AlertType.NONE);
         }
         

@@ -99,7 +99,6 @@ public class EdicionTratamientosVetController implements Initializable {
             mostrarAlerta("Vacio", "No hay tratamientos para mostrar", Alert.AlertType.INFORMATION);
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo cargar el animal",Alert.AlertType.ERROR);
-            e.printStackTrace();
         }
     }
 
@@ -141,7 +140,6 @@ public class EdicionTratamientosVetController implements Initializable {
 
         } catch (Exception e) {
             mostrarAlerta("Error", "Error al guardar cambios",Alert.AlertType.ERROR);
-            e.printStackTrace();
         }
     }
 

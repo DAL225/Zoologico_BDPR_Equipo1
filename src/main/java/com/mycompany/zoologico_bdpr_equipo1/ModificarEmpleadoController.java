@@ -178,7 +178,6 @@ public class ModificarEmpleadoController implements Initializable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error", "Error al buscar empleado", Alert.AlertType.ERROR);
         }
     }
@@ -196,6 +195,8 @@ public class ModificarEmpleadoController implements Initializable {
             empleadoActual.setUsuario(txtUsuario.getText().trim());
             empleadoActual.setPassword(txtPassword.getText().trim());
 
+            empleadoActual.setTurnos(listaTurnos);
+            
             // actualizar estructuras también
             if (empleadoActual instanceof Administrador) {
                 Administrador admin = (Administrador) empleadoActual;
@@ -248,9 +249,9 @@ public class ModificarEmpleadoController implements Initializable {
                 }
                 mostrarAlerta("Fracaso", "El elemento no se pudo modificar", Alert.AlertType.INFORMATION);
             }
+            
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error", "No se pudo modificar", Alert.AlertType.ERROR);
         }
     }
@@ -273,7 +274,7 @@ public class ModificarEmpleadoController implements Initializable {
             stage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -295,7 +296,7 @@ public class ModificarEmpleadoController implements Initializable {
             stage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -317,7 +318,7 @@ public class ModificarEmpleadoController implements Initializable {
             stage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -328,7 +329,7 @@ public class ModificarEmpleadoController implements Initializable {
     private void modificarHabitats(ActionEvent event) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("edicionHabitats.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/scenes/edicionHabitats.fxml"));
             Parent vista = loader.load();
 
             EdicionHabitatsController controller = loader.getController();
@@ -339,7 +340,7 @@ public class ModificarEmpleadoController implements Initializable {
             stage.show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

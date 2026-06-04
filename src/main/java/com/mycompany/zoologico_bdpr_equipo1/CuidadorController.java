@@ -121,7 +121,7 @@ public class CuidadorController {
             stageActual.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            mostrarAlerta("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -257,7 +257,6 @@ public class CuidadorController {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
         }
 
