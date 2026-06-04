@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -30,7 +31,7 @@ import javafx.stage.Stage;
  *
  * @author amiss
  */
-public class ListaAnimalesController {
+public class ListaAnimalesController implements Initializable  {
 
     @FXML
     private TableView<Animal> tblAnimales;
@@ -82,6 +83,7 @@ public class ListaAnimalesController {
         cargarDatos();
     }
 
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
