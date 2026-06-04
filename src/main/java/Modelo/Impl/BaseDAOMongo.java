@@ -1,25 +1,31 @@
 package Modelo.Impl;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import java.util.ArrayList;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import static com.mongodb.client.model.Sorts.*;
+import static java.lang.Integer.parseInt;
+import org.bson.types.ObjectId;
 
 /**
  *
  * @author amiss
  */
-public abstract class BaseDAOMongo {
+public class BaseDAOMongo {
     
     private String conexion = "mongodb://localhost:27017";
     private String base = "Zoologico";
     private String coleccionAnimales = "Animales";
     private String coleccionHabitats = "Habitats";
-    private MongoDatabase db;
-    private MongoCollection<Document> colAnimales;
-    private MongoCollection<Document> colHabitats;
+    public MongoDatabase db;
+    public MongoCollection<Document> colAnimales;
+    public MongoCollection<Document> colHabitats;
     
     /**
      * Constructor que conecta con la base de datos de Mongo, o la crea de no existir
@@ -28,11 +34,10 @@ public abstract class BaseDAOMongo {
      * @throws Exception
      */
     public BaseDAOMongo() throws Exception {
-        try (MongoClient cliente = MongoClients.create(conexion)){
-            db = cliente.getDatabase(base);
-            MongoCollection<Document> colAnimales = db.getCollection(coleccionAnimales);
-            MongoCollection<Document> colHabitats = db.getCollection(coleccionHabitats);
-        }
+        MongoClient cliente = MongoClients.create(conexion);
+        this.db = cliente.getDatabase(base);
+        this.colAnimales = db.getCollection(coleccionAnimales);
+        this.colHabitats = db.getCollection(coleccionHabitats);
     }
     
     /**
@@ -142,6 +147,17 @@ public abstract class BaseDAOMongo {
      */
     public Document appendArrayInt(Document doc, String atributo, ArrayList<Integer> valor){
         doc.append(atributo, valor);
+        return doc;
+    }
+    
+    public FindIterable<Document> obtenerDocumentos(MongoCollection<Document> coleccion){
+        FindIterable<Document> docs = coleccion.find();
+        return docs;
+    }
+    
+    public Document obtenerDocumento(int id, MongoCollection<Document> coleccion){
+        Bson comparacion = Filters.eq("_id", id);
+        Document doc = coleccion.find(comparacion).first();
         return doc;
     }
 }

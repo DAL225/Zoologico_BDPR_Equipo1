@@ -4,11 +4,15 @@
  */
 package Modelo.Impl;
 
-import Modelo.Dao.AnimalDAO;
 import Modelo.Dao.HabitatDAO;
 import Modelo.Habitat;
+import com.mongodb.client.FindIterable;
+import static com.mongodb.client.model.Sorts.descending;
+import static java.lang.Integer.parseInt;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -16,11 +20,14 @@ import java.util.List;
  */
 public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     
+    private BaseDAOMongo DAO; 
+    
     /**
      * Constructor de la clase
      * @throws Exception Posible Excepcion
      */
     public HabitatDAOImpl() throws Exception {
+        this.DAO = new BaseDAOMongo();
     }
 
     /**
@@ -31,7 +38,16 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
      */
     @Override
     public Habitat obtenerHabitat(int id) throws Exception {
-        Habitat habitat = null;
+        Document doc = this.DAO.obtenerDocumento(id, this.DAO.colHabitats);
+        Habitat habitat = new Habitat();
+        habitat.setId(id);
+        habitat.setNombre(doc.getString("nombre"));
+        habitat.setTipo(doc.getString("tipo"));
+        habitat.setClima(doc.getString("clima"));
+        habitat.setNivelLimpieza(doc.getString("nivel_limpieza"));
+        if (doc.getInteger("capacidad_animales") != null){
+            habitat.setCapacidadAnimales(doc.getInteger("capacidad_animales"));
+        }
         
         //Logica obtencion habitat/mongo
         
@@ -67,10 +83,10 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     @Override
     public List<Habitat> obtenerTodosHabitats() throws Exception {
         List<Habitat> habitats = new ArrayList<>();
-        try {
-
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+        FindIterable<Document> Aux = DAO.obtenerDocumentos(colHabitats);
+        for (Document doc : Aux){
+            Habitat habitatAux = this.obtenerHabitat(doc.getInteger("_id"));
+            habitats.add(habitatAux);
         }
 
         return habitats;
@@ -83,15 +99,19 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
      */
     @Override
     public Integer obtenerIdDisponible() throws Exception {
-        try{
-            
-            
-        }catch(Exception e){
-            throw new Exception(e.getMessage());
+        Document doc = DAO.colHabitats.find().sort(descending("_id")).first();
+        if (doc != null){
+            if (doc.getObjectId("_id") != null){
+                ObjectId id = doc.getObjectId("_id");
+                String idS = id.toString();
+                int idInt = parseInt(idS);
+                return idInt;
+            } else {
+                return 1;
+            }
+        } else {
+            return 1;
         }
-        
-        
-        return 0;
     }
     
     /**
@@ -144,11 +164,29 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     @Override
     public boolean agregarHabitat(Habitat habitatAux) throws Exception {
         try{//logica verificar si atributo es distinto de isblank, y .append, para las listas si es distinto de isEmpty
-            
-            
+            Document doc = DAO.nuevoConInt("_id", habitatAux.getId());
+            if (habitatAux.getNombre() != null){
+                doc = DAO.appendString(doc, "nombre", habitatAux.getNombre());
+            }
+            if (habitatAux.getTipo() != null){
+                doc = DAO.appendString(doc, "tipo", habitatAux.getTipo());
+            }
+            if (habitatAux.getClima() != null){
+                doc = DAO.appendString(doc, "clima", habitatAux.getClima());
+            }
+            if (habitatAux.getNivelLimpieza() != null){
+                doc = DAO.appendString(doc, "nivel_limpieza", habitatAux.getNivelLimpieza());
+            }
+            if ((Integer) habitatAux.getCapacidadAnimales() != null){
+                doc = DAO.appendInt(doc, "capacidad_animales", habitatAux.getCapacidadAnimales());
+            }
+            if (DAO.insertarUno(doc, colHabitats)){
+                return true;
+            } else {
+                return false;
+            }
         }catch(Exception e){
             throw new Exception(e.getMessage());
         }
-        return false;
     }
 }
