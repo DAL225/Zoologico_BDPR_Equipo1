@@ -138,9 +138,11 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public boolean eliminarAnimal(int idAnimal) throws Exception{
-        //delete
-        //tambien debe buscar en todos los cuidadores y veterinarios quin tenga ese id y borrarlo.
-        return true;
+        if (DAO.eliminarDocumento(idAnimal, colAnimales)){
+            return true;
+        } else {
+            return false;
+        }
     }
     
     /**

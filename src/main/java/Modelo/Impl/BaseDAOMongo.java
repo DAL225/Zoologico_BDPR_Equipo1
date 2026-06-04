@@ -160,4 +160,13 @@ public class BaseDAOMongo {
         Document doc = coleccion.find(comparacion).first();
         return doc;
     }
+    
+    public boolean eliminarDocumento(int id, MongoCollection<Document> coleccion){
+        Bson comparacion = Filters.eq("_id", id);
+        if (coleccion.deleteOne(comparacion) != null){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

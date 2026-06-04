@@ -141,12 +141,10 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
      */
     @Override
     public boolean eliminarHabitat(int idHabitat) throws Exception {
-        try {
-            
-            //logica
+        if (DAO.eliminarDocumento(idHabitat, colHabitats)){
             return true;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+        } else {
+            return false;
         }
 
         //logicaOracle
