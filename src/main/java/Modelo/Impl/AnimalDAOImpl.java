@@ -84,7 +84,6 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public List<Animal> obtenerTodosAnimales() throws Exception {
-
         List<Animal> listaAnimales = new ArrayList<>();
         FindIterable<Document> Aux = DAO.obtenerDocumentos(colAnimales);
         for (Document doc : Aux){

@@ -35,12 +35,6 @@ public class App extends Application {
 //        }
         try {
             BaseDAOMongo DAO = new BaseDAOMongo();
-            Document doc = DAO.nuevoConInt("_id", 1);
-            DAO.insertarUno(doc, DAO.colAnimales);
-            FindIterable<Document> docs = DAO.obtenerDocumentos(DAO.colAnimales);
-            for (Document a : docs){
-                System.out.println(a.toString());
-            }
             AnimalDAOImpl dao = new AnimalDAOImpl();
             System.out.println("Ahora la lista");
             List<Animal> ñ = dao.obtenerTodosAnimales();

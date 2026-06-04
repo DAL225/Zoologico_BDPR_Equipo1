@@ -26,11 +26,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import java.util.List;
+import javafx.fxml.Initializable;
 /**
  *
  * @author amiss
  */
-public class ListaAnimalesController {
+public class ListaAnimalesController implements Initializable {
 
     @FXML
     private TableView<Animal> tblAnimales;
@@ -71,6 +73,8 @@ public class ListaAnimalesController {
     private AnimalDAO animalDao;
     
     private List<Integer> listaIdAnimales;
+    
+    private ObservableList<Animal> lista;
 
     /**
      * Permite asignar la lista de la cual cargara los datos de animales
@@ -79,11 +83,11 @@ public class ListaAnimalesController {
      */
     public void setListaIdAnimales(List<Integer> listaIdAnimales) {
         this.listaIdAnimales = listaIdAnimales;
-        cargarDatos();
+        cargarDatos(this.lista);
     }
 
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colNombreCientifico.setCellValueFactory(new PropertyValueFactory<>("nombreCientifico"));
         colEspecie.setCellValueFactory(new PropertyValueFactory<>("especie"));
@@ -92,7 +96,9 @@ public class ListaAnimalesController {
         colEdad.setCellValueFactory(new PropertyValueFactory<>("edad"));
         colSexo.setCellValueFactory(new PropertyValueFactory<>("sexo"));
         colEstadoSalud.setCellValueFactory(new PropertyValueFactory<>("estadoSalud"));
-
+        this.lista = FXCollections.observableArrayList();
+        tblAnimales.setItems(lista);
+        this.cargarDatos(this.lista);
         configurarColumnaRecomendaciones();
         configurarColumnaTratamientos();
     }
@@ -219,18 +225,20 @@ public class ListaAnimalesController {
     /**
      * Carga de datos a la tabla.
      */
-    private void cargarDatos() {
-        ObservableList<Animal> lista = FXCollections.observableArrayList();
-
+    private void cargarDatos(ObservableList<Animal> list) {
+        list.clear();
+        list.add(new Animal());
         try {
             animalDao = new AnimalDAOImpl();
             if (listaIdAnimales == null) {
-                lista.addAll(animalDao.obtenerTodosAnimales());
+                list.addAll(animalDao.obtenerTodosAnimales());
+                System.out.println("ListaAnimales: "+animalDao.obtenerTodosAnimales().size());
                 
+                System.out.println(list);
             } else {
-                lista.addAll(animalDao.obtenerAnimales(listaIdAnimales));
+                list.addAll(animalDao.obtenerAnimales(listaIdAnimales));
             }
-            if (lista == null || lista.isEmpty()) {
+            if (list == null || list.isEmpty()) {
                 mostrarAlerta("Vacio", "No hay elementos para mostrar ", Alert.AlertType.INFORMATION);
                 return;
             }
@@ -240,7 +248,8 @@ public class ListaAnimalesController {
             mostrarAlerta("Error", "Error al cargar los datos", Alert.AlertType.ERROR);
         }
 
-        tblAnimales.setItems(lista);
+        tblAnimales.setItems(list);
+        System.out.println("ListaAnimales: "+list.size());
     }
 
     /**
