@@ -97,6 +97,7 @@ public class ListaAnimalesController implements Initializable  {
 
         configurarColumnaRecomendaciones();
         configurarColumnaTratamientos();
+        cargarDatos();
     }
     
     /**

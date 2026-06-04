@@ -118,6 +118,7 @@ public class EdicionRecomendacionesVetController implements Initializable {
         }
 
         listaRecomendaciones.add(texto);
+        cargarDatos();
         txtNuevaRecomendacion.clear();
     }
 

@@ -39,25 +39,31 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     @Override
     public Habitat obtenerHabitat(int id) throws Exception {
         Document doc = this.DAO.obtenerDocumento(id, this.DAO.colHabitats);
+
+        // Si el hábitat no existe en MongoDB
+        if (doc == null) {
+            return null;
+        }
+
+        // Si el documento existe, es seguro mapear sus propiedades
         Habitat habitat = new Habitat();
         habitat.setId(id);
         habitat.setNombre(doc.getString("nombre"));
         habitat.setTipo(doc.getString("tipo"));
         habitat.setClima(doc.getString("clima"));
         habitat.setNivelLimpieza(doc.getString("nivel_limpieza"));
-        if (doc.getInteger("capacidad_animales") != null){
+
+        if (doc.getInteger("capacidad_animales") != null) {
             habitat.setCapacidadAnimales(doc.getInteger("capacidad_animales"));
         }
-        
-        //Logica obtencion habitat/mongo
-        
+
         return habitat;
     }
-    
-    
+
     /**
-     * Obtiene la lista de habitats, segun la lista de ids habitat que tiene
-     * un intendente.
+     * Obtiene la lista de habitats, segun la lista de ids habitat que tiene un
+     * intendente.
+     *
      * @param ids lista de ids que tiene un intendente
      * @returnlista de habitats
      * @throws Exception 
@@ -99,19 +105,17 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
      */
     @Override
     public Integer obtenerIdDisponible() throws Exception {
-        Document doc = DAO.colHabitats.find().sort(descending("_id")).first();
-        if (doc != null){
-            if (doc.getObjectId("_id") != null){
-                ObjectId id = doc.getObjectId("_id");
-                String idS = id.toString();
-                int idInt = parseInt(idS);
-                return idInt;
-            } else {
-                return 1;
-            }
-        } else {
+        Document doc = DAO.colHabitats.find()
+                .sort(descending("_id"))
+                .first();
+
+        if (doc == null) {
             return 1;
         }
+
+        Integer ultimoId = doc.getInteger("_id");
+
+        return ultimoId + 1;
     }
     
     /**

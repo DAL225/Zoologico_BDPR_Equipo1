@@ -117,6 +117,7 @@ public class EdicionTratamientosVetController implements Initializable {
             return;
         }
 
+        cargarDatos();
         listaTratamientos.add(texto);
         txtNuevoTratamiento.clear();
     }

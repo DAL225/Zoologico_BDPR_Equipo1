@@ -52,10 +52,13 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
         }
         animal.setSexo(doc.getString("sexo"));
         animal.setEstadoSalud(doc.getString("estado_salud"));
-        animal.setRecomendacionesCuidado(doc.getList("recomendaciones_cuidado", String.class));
-        animal.setTratamientos(doc.getList("tratamientos", String.class));
-        //Logica obtencion habitat/mongo
-        
+
+        List<String> recomendaciones = doc.getList("recomendaciones_cuidado", String.class);
+        animal.setRecomendacionesCuidado(recomendaciones != null ? recomendaciones : new ArrayList<>());
+
+        List<String> tratamientos = doc.getList("tratamientos", String.class);
+        animal.setTratamientos(tratamientos != null ? tratamientos : new ArrayList<>());
+
         return animal;
     }
     
@@ -99,48 +102,50 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
     /**
      * Obtiene el id maximo dentro de la bd.
      * La idea es usar 'sort(descending("_id")).first()'
-     * que se cree obtiene el maximo id, luego sumarle 1, y regresar eso como valor.
+     * que se cree obtiene el maximo id, luego
+     * sumarle 1, y regresar eso como valor.
+     *
      * @return el id disponible
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public Integer obtenerIdDisponible() throws Exception {
-        Document doc = DAO.colAnimales.find().sort(descending("_id")).first();
-        if (doc != null){
-            if (doc.getObjectId("_id") != null){
-                ObjectId id = doc.getObjectId("_id");
-                String idS = id.toString();
-                int idInt = parseInt(idS);
-                return idInt;
-            } else {
-                return 1;
-            }
-        } else {
+        Document doc = DAO.colAnimales.find()
+                .sort(descending("_id"))
+                .first();
+
+        if (doc == null) {
             return 1;
         }
+
+        Integer ultimoId = doc.getInteger("_id");
+
+        return ultimoId + 1;
     }
-    
+
     /**
-     * Modifica los datos de un animal pasando un parametro con los datos a modificar
-     * y el id del cual se modificara.
+     * Modifica los datos de un animal pasando un parametro con los datos a
+     * modificar y el id del cual se modificara.
+     *
      * @param animalAux animal con los nuevos datos pero el id requerido
      * @return true exito, false en caso contrario
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
-    public boolean modificarDatos(Animal animalAux) throws Exception{
+    public boolean modificarDatos(Animal animalAux) throws Exception {
         //update cada dato
         return true;
     }
-    
+
     /**
      * Eliminar un animal por su id.
+     *
      * @param idAnimal id del animal requerido
      * @return true exito, false en caso contrario
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
-    public boolean eliminarAnimal(int idAnimal) throws Exception{
+    public boolean eliminarAnimal(int idAnimal) throws Exception {
         //delete
         //tambien debe buscar en todos los cuidadores y veterinarios quin tenga ese id y borrarlo.
         return true;
@@ -194,7 +199,7 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
             doc = DAO.appendString(doc, "nombre_cientifico", animalAux.getNombreCientifico());
         }
         if (animalAux.getEspecie() != null){
-            doc = DAO.appendString(doc, "epecie", animalAux.getEspecie());
+            doc = DAO.appendString(doc, "especie", animalAux.getEspecie());
         }
         if ((Integer) animalAux.getIdHabitat() != null){
             doc = DAO.appendInt(doc, "id_habitat", animalAux.getIdHabitat());
@@ -211,13 +216,18 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
         if (animalAux.getEstadoSalud() != null){
             doc = DAO.appendString(doc, "estado_salud", animalAux.getEstadoSalud());
         }
-        if (!animalAux.getRecomendacionesCuidado().isEmpty()){
-            doc = DAO.appendArrayString(doc, "recomendaciones_cuidado", (ArrayList<String>) animalAux.getRecomendacionesCuidado());
+        if (!animalAux.getRecomendacionesCuidado().isEmpty()) {
+            // lista al constructor de ArrayList en lugar de hacer cast directo
+            ArrayList<String> recomendacionesList = new ArrayList<>(animalAux.getRecomendacionesCuidado());
+            doc = DAO.appendArrayString(doc, "recomendaciones_cuidado", recomendacionesList);
         }
-        if (!animalAux.getTratamientos().isEmpty()){
-            doc = DAO.appendArrayString(doc, "tratamientos", (ArrayList<String>) animalAux.getTratamientos());
+
+        if (!animalAux.getTratamientos().isEmpty()) {
+            // tratamientos
+            ArrayList<String> tratamientosList = new ArrayList<>(animalAux.getTratamientos());
+            doc = DAO.appendArrayString(doc, "tratamientos", tratamientosList);
         }
-        if (DAO.insertarUno(doc, colAnimales)){
+        if (DAO.insertarUno(doc, colAnimales)) {
             return true;
         } else {
             return false;
