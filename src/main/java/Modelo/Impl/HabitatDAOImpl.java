@@ -123,14 +123,30 @@ public class HabitatDAOImpl extends BaseDAOMongo implements HabitatDAO {
     @Override
     public boolean modificarDatos(Habitat habitatAux) throws Exception{
         try{
-            
-            
+            if (habitatAux.getNombre() != null){
+                System.out.println("A");
+                DAO.actualizarString(habitatAux.getId(), "nombre", habitatAux.getNombre(), colHabitats);
+            }
+            if (habitatAux.getTipo() != null){
+                System.out.println("B");
+                DAO.actualizarString(habitatAux.getId(), "tipo", habitatAux.getTipo(), colHabitats);
+            }
+            if (habitatAux.getClima()!= null){
+                System.out.println("C");
+                DAO.actualizarString(habitatAux.getId(), "clima", habitatAux.getClima(), colHabitats);
+            }
+            if (habitatAux.getNivelLimpieza()!= null){
+                System.out.println("D");
+                DAO.actualizarString(habitatAux.getId(), "nivel_limpieza", habitatAux.getNivelLimpieza(), colHabitats);
+            }
+            if ((Integer) habitatAux.getCapacidadAnimales()!= null){
+                System.out.println("E");
+                DAO.actualizarInt(habitatAux.getId(), "capacidad_animales", habitatAux.getCapacidadAnimales(), colAnimales);
+            }
+            return true;
         }catch(Exception e){
-            throw new Exception(e.getMessage());
+            return false;
         }
-        
-        
-        return false;
     }
     
     /**

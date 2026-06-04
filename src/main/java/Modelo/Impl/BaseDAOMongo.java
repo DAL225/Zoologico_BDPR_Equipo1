@@ -6,11 +6,14 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Filters.*;
 import java.util.ArrayList;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import static com.mongodb.client.model.Sorts.*;
+import static com.mongodb.client.model.Updates.*;
 import static java.lang.Integer.parseInt;
+import java.util.List;
 import org.bson.types.ObjectId;
 
 /**
@@ -166,6 +169,37 @@ public class BaseDAOMongo {
         if (coleccion.deleteOne(comparacion) != null){
             return true;
         } else {
+            return false;
+        }
+    }
+    
+    public boolean actualizarString(int id, String atributo, String valor, MongoCollection<Document> coleccion){
+        if(coleccion.updateOne(eq("_id", id), set(atributo, valor)) != null){
+            System.out.println("SI");
+            System.out.println();
+            return true;
+        } else {
+            System.out.println("NO");
+            return false;
+        }
+    }
+    
+    public boolean actualizarInt(int id, String atributo, int valor, MongoCollection<Document> coleccion){
+        if(coleccion.updateOne(eq("_id", id), set(atributo, valor)) != null){
+            System.out.println("SI");
+            return true;
+        } else {
+            System.out.println("NO");
+            return false;
+        }
+    }
+    
+    public boolean actualizarArrayString(int id, String atributo, List<String> valor, MongoCollection<Document> coleccion){
+        if(coleccion.updateOne(eq("_id", id), set(atributo, valor)) != null){
+            System.out.println("SI");
+            return true;
+        } else {
+            System.out.println("NO");
             return false;
         }
     }

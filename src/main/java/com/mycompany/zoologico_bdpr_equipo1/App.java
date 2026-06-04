@@ -33,18 +33,6 @@ public class App extends Application {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        try {
-            BaseDAOMongo DAO = new BaseDAOMongo();
-            AnimalDAOImpl dao = new AnimalDAOImpl();
-            System.out.println("Ahora la lista");
-            List<Animal> ñ = dao.obtenerTodosAnimales();
-            for (Animal a : ñ){
-                System.out.println(a.toString2());
-            }
-        } catch (Exception e){
-            System.out.println("El coso ya existe wey");
-            System.out.println(e.getMessage());
-        }
         scene = new Scene(loadFXML("admin"));
         stage.setScene(scene);
         stage.show();

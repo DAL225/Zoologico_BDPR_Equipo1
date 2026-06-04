@@ -125,9 +125,40 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      * @throws Exception 
      */
     @Override
-    public boolean modificarDatos(Animal animalAux) throws Exception{
-        //update cada dato
-        return true;
+    public boolean modificarDatos(Animal animalAux){
+        try {
+            if (animalAux.getNombreCientifico() != null){
+                System.out.println("A");
+                DAO.actualizarString(animalAux.getId(), "nombre_cientifico", animalAux.getNombreCientifico(), colAnimales);
+            }
+            if (animalAux.getEspecie() != null){
+                System.out.println("B");
+                DAO.actualizarString(animalAux.getId(), "especie", animalAux.getEspecie(), colAnimales);
+            }
+            if ((Integer) animalAux.getIdHabitat() != null){
+                System.out.println("C");
+                DAO.actualizarInt(animalAux.getId(), "id_habitat", animalAux.getIdHabitat(), colAnimales);
+            }
+            if (animalAux.getNombreComun() != null){
+                System.out.println("D");
+                DAO.actualizarString(animalAux.getId(), "nombre_común", animalAux.getNombreComun(), colAnimales);
+            }
+            if ((Integer) animalAux.getEdad() != null){
+                System.out.println("E");
+                DAO.actualizarInt(animalAux.getId(), "edad", animalAux.getEdad(), colAnimales);
+            }
+            if (animalAux.getSexo() != null){
+                System.out.println("F");
+                DAO.actualizarString(animalAux.getId(), "sexo", animalAux.getSexo(), colAnimales);
+            }
+            if (animalAux.getEstadoSalud() != null){
+                System.out.println("G");
+                DAO.actualizarString(animalAux.getId(), "estado_salud", animalAux.getEstadoSalud(), colAnimales);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     /**
@@ -155,8 +186,13 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public boolean modificarRecomendaciones(int idAnimal, List<String> recomendaciones) throws Exception{
-        
-        return true;
+        Document doc = DAO.nuevoConInt("_id", idAnimal);
+        if (recomendaciones != null){
+            DAO.actualizarArrayString(idAnimal, "recomendaciones_cuidado", recomendaciones, colAnimales);
+            return true;
+        } else {
+            return true;
+        }
     }
     
     /**
@@ -169,8 +205,13 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
      */
     @Override
     public boolean modificarTratamientos(int idAnimal, List<String> tratamientos) throws Exception{
-        
-        return true;
+        Document doc = DAO.nuevoConInt("_id", idAnimal);
+        if (tratamientos != null){
+            DAO.actualizarArrayString(idAnimal, "tratamientos", tratamientos, colAnimales);
+            return true;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -193,7 +234,7 @@ public class AnimalDAOImpl extends BaseDAOMongo implements AnimalDAO{
             doc = DAO.appendString(doc, "nombre_cientifico", animalAux.getNombreCientifico());
         }
         if (animalAux.getEspecie() != null){
-            doc = DAO.appendString(doc, "epecie", animalAux.getEspecie());
+            doc = DAO.appendString(doc, "especie", animalAux.getEspecie());
         }
         if ((Integer) animalAux.getIdHabitat() != null){
             doc = DAO.appendInt(doc, "id_habitat", animalAux.getIdHabitat());
