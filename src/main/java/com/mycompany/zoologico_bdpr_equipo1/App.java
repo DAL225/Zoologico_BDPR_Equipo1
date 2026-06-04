@@ -33,7 +33,7 @@ public class App extends Application {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        scene = new Scene(loadFXML("admin"));
+        scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
         stage.show();
     }

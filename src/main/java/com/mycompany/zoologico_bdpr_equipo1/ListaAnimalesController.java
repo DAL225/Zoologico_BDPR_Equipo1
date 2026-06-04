@@ -84,6 +84,7 @@ public class ListaAnimalesController implements Initializable {
      */
     public void setListaIdAnimales(List<Integer> listaIdAnimales) {
         this.listaIdAnimales = listaIdAnimales;
+        cargarDatos();
     }
 
     @Override
